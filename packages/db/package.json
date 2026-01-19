@@ -1,8 +1,11 @@
 {
-  "name": "@repo/db",
+  "name": "@workspace/db",
   "module": "index.ts",
   "type": "module",
   "private": true,
+  "exports" : {
+    "./src/index.ts" : "./dist/index.js"  
+  },
   "devDependencies": {
     "@types/bun": "latest",
     "@types/pg": "^8.16.0",
