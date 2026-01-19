@@ -1,18 +1,21 @@
 {
   "compilerOptions": {
     // Environment setup & latest features
-    "rootDir" : "src",
     "outDir" : "dist",
     "lib": ["ESNext"],
     "target": "ESNext",
     "module": "Preserve",
     "moduleDetection": "force",
     "allowJs": true,
+    "baseUrl": ".",
+    "paths": {
+      "@workspace/db/*" : ["../db/src/*.ts"],
+      "@workspace/utils/*" : ["./src/*"]
+    },
 
     // Bundler mode
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
     "noEmit": true,
     "esModuleInterop" : true,
 

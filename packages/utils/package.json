@@ -1,12 +1,17 @@
 {
-  "name": "@repo/utils",
+  "name": "@workspace/utils",
   "module": "index.ts",
   "type": "module",
   "private": true,
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "next-auth": "^4.24.13"
   },
   "peerDependencies": {
-    "typescript": "^5"
+    "typescript": "^5",
+    "jsonwebtoken": "^9.0.3"
+  },
+  "dependencies": {
+    "@workspace/db" : "workspace:*"
   }
 }
