@@ -39,11 +39,10 @@ export const providers = [
             }, process.env.NEXTAUTH_SECRET!)
 
             return {
-                id : user.id,
-                username : user.username,
-                token 
+                id: user.id,
+                username: user.username,
+                token
             }
         }
     })
-
 ]

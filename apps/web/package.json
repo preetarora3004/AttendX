@@ -11,9 +11,11 @@
     "check-types": "next typegen && tsc --noEmit"
   },
   "dependencies": {
+    "@auth/prisma-adapter": "^2.11.1",
     "@types/jsonwebtoken": "^9.0.10",
     "@workspace/ui": "workspace:*",
     "@workspace/utils": "workspace:*",
+    "@workspace/db": "workspace:*",
     "jsonwebtoken": "^9.0.3",
     "next": "16.0.10",
     "next-auth": "^4.24.13",

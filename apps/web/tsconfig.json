@@ -10,7 +10,8 @@
     "paths": {
       "@workspace/ui/*" : ["../../packages/ui/src/*"],
       "@workspace/utils/*" : ["../../packages/utils/src/*"]
-    }
+    },
+    "typeRoots": ["../../packages/types"]
   },
   "include": [
     "**/*.ts",
