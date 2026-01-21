@@ -9,7 +9,8 @@
   },
   "peerDependencies": {
     "typescript": "^5",
-    "jsonwebtoken": "^9.0.3"
+    "jsonwebtoken": "^9.0.3",
+    "@auth/prisma-adapter": "^2.11.1"
   },
   "dependencies": {
     "@workspace/db" : "workspace:*"
