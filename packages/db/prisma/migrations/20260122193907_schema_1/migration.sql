@@ -2,9 +2,6 @@
 CREATE TYPE "Role" AS ENUM ('student', 'teacher');
 
 -- CreateEnum
-CREATE TYPE "Gender" AS ENUM ('male', 'female');
-
--- CreateEnum
 CREATE TYPE "Attendance" AS ENUM ('present', 'absent');
 
 -- CreateTable
@@ -13,7 +10,8 @@ CREATE TABLE "User" (
     "username" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "role" "Role" NOT NULL
+    "role" "Role" NOT NULL,
+    "time_table" TEXT[]
 );
 
 -- CreateTable
@@ -21,10 +19,9 @@ CREATE TABLE "Student" (
     "id" TEXT NOT NULL,
     "rollNum" INTEGER NOT NULL,
     "course" TEXT NOT NULL,
-    "userId" TEXT,
-    "classId" TEXT NOT NULL,
-    "gender" "Gender" NOT NULL,
-    "attendance" "Attendance" NOT NULL
+    "userId" TEXT NOT NULL,
+    "classId" TEXT,
+    "attendance" "Attendance"
 );
 
 -- CreateTable
@@ -32,15 +29,14 @@ CREATE TABLE "Teacher" (
     "id" TEXT NOT NULL,
     "teacherId" INTEGER NOT NULL,
     "dept" TEXT NOT NULL,
-    "classId" TEXT NOT NULL,
-    "userId" TEXT,
-    "gender" "Gender" NOT NULL
+    "userId" TEXT NOT NULL
 );
 
 -- CreateTable
 CREATE TABLE "Class" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "teacherId" TEXT NOT NULL,
     "total_strength" INTEGER NOT NULL
 );
 
@@ -66,13 +62,13 @@ CREATE UNIQUE INDEX "Teacher_teacherId_key" ON "Teacher"("teacherId");
 CREATE UNIQUE INDEX "Class_id_key" ON "Class"("id");
 
 -- AddForeignKey
-ALTER TABLE "Student" ADD CONSTRAINT "Student_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Student" ADD CONSTRAINT "Student_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Student" ADD CONSTRAINT "Student_classId_fkey" FOREIGN KEY ("classId") REFERENCES "Class"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Student" ADD CONSTRAINT "Student_classId_fkey" FOREIGN KEY ("classId") REFERENCES "Class"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Teacher" ADD CONSTRAINT "Teacher_classId_fkey" FOREIGN KEY ("classId") REFERENCES "Class"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Teacher" ADD CONSTRAINT "Teacher_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Teacher" ADD CONSTRAINT "Teacher_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Class" ADD CONSTRAINT "Class_teacherId_fkey" FOREIGN KEY ("teacherId") REFERENCES "Teacher"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

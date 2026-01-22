@@ -10,7 +10,7 @@ export const callbacks: Partial<CallbacksOptions> = {
 
             return {
                 ...token,
-                sub: user.id,
+                id: user.id,
                 username: user.username
             }
         }
