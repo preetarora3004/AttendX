@@ -8,13 +8,14 @@ datasource db {
 }
 
 model User {
-  id       String    @unique @default(cuid())
-  username String    @unique
-  password String
-  name     String
-  role     Role
-  user     Student[]
-  teacher  Teacher[]
+  id         String    @unique @default(cuid())
+  username   String    @unique
+  password   String
+  name       String
+  role       Role
+  user       Student[]
+  teacher    Teacher[]
+  time_table String[]
 }
 
 model Student {
