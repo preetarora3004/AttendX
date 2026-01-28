@@ -29,7 +29,8 @@ export async function POST(req: NextRequest) {
             })
 
             return NextResponse.json({
-                message: "Enrolled successfully"
+                message: "Enrolled successfully",
+                teacher
             }, { status: 200 })
         }
         catch (err) {

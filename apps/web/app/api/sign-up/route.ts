@@ -1,5 +1,6 @@
 import { client } from "@workspace/db/index"
 import { NextRequest, NextResponse } from "next/server";
+import jwt from "jsonwebtoken"
 
 export async function POST(req: NextRequest) {
 
@@ -7,7 +8,6 @@ export async function POST(req: NextRequest) {
     const { username, password, name, role } = body;
 
     try {
-
         const existingUser = await client.user.findUnique({
             where: {
                 username,
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
 
         if (existingUser) return NextResponse.json({
             message: "User already exist"
-        }, {status: 400})
+        }, { status: 400 })
 
         const user = await client.user.create({
             data: {
@@ -28,14 +28,22 @@ export async function POST(req: NextRequest) {
             }
         })
 
+        const token = jwt.sign({
+
+            id: user.id,
+            username: user.username,
+            role: user.role
+
+        }, process.env.JWT_SECRET as string);
+
         return NextResponse.json({
             message: "User created successfully",
-            user
-        },{status: 200});
+            token
+        }, { status: 200 });
     }
     catch (err) {
         return NextResponse.json({
             message: "Unable to create user",
-        }, {status : 500})
+        }, { status: 500 })
     }
 }

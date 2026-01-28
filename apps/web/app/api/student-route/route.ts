@@ -6,7 +6,6 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
     const { rollNum, course, classId } = body;
-
     const authHeader = req.headers.get("authorization")
 
     if (!authHeader?.startsWith("bearer")) return NextResponse.json({
@@ -29,7 +28,8 @@ export async function POST(req: NextRequest) {
             })
 
             return NextResponse.json({
-                message: "Student registeration successfull"
+                message: "Student registeration successfull",
+                student
             }, { status: 200 });
         }
         catch (err) {
@@ -39,7 +39,6 @@ export async function POST(req: NextRequest) {
         }
     }
     else {
-
         return NextResponse.json({
             message: "Token invalid",
         }, { status: 401 })
