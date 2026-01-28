@@ -6,7 +6,6 @@ export async function GET(req: NextRequest) {
 
     const body = await req.json();
     const { rollNum } = body;
-
     const authHeader = req.headers.get("authorization");
 
     if (!authHeader || !authHeader.startsWith("bearer")) return NextResponse.json({
@@ -21,7 +20,6 @@ export async function GET(req: NextRequest) {
     }, { status: 403 });
 
     try {
-
         const student = await client.student.findUnique({
             where: {
                 rollNum

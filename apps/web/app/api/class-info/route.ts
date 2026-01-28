@@ -7,7 +7,6 @@ export async function GET(req: NextRequest) {
     const { name } = body;
 
     try {
-
         const classInfo = await client.class.findUnique({
             where: {
                 name

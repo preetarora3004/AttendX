@@ -20,7 +20,6 @@ export async function GET(req: NextRequest) {
     }, { status: 403 });
 
     try {
-
         const studentList = await client.class.findUnique({
             where: {
                 name: class_name
