@@ -16,11 +16,7 @@ export async function POST(req: NextRequest) {
     const token = authHeader.split(" ")[1];
     const user = jwt.verify(token as string, process.env.SECRET as string) as JwtPayload;
 
-<<<<<<< HEAD
     if (user && user.id) {
-=======
-    if (user&&user.id) {
->>>>>>> origin/dev
 
         try {
 
