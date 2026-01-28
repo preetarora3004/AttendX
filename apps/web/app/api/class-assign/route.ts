@@ -2,7 +2,7 @@ import { client } from "@workspace/db/index"
 import jwt, { JwtPayload } from "jsonwebtoken"
 import { NextRequest, NextResponse } from "next/server"
 
-export async function POST(req: NextRequest) {
+export async function PATCH(req: NextRequest) {
 
     const body = await req.json();
     const { classId, rollNum } = body;
