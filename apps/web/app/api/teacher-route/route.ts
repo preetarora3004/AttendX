@@ -6,7 +6,6 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
     const { teacherId, dept } = body;
-
     const authHeader = req.headers.get("authorization");
 
     if (!authHeader?.startsWith("bearer")) return NextResponse.json({
@@ -19,7 +18,6 @@ export async function POST(req: NextRequest) {
     if (user && user.id) {
 
         try {
-
             const teacher = await client.teacher.create({
                 data: {
                     teacherId,
