@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     const token = authHeader.split(" ")[1];
     const user = jwt.verify(token as string, process.env.secret as string) as JwtPayload
 
-    if (user) {
+    if (user && user.id) {
 
         try {
             const student = await client.student.create({
