@@ -35,12 +35,14 @@ export const providers = [
 
             const token = jwt.sign({
                 id: user.id,
-                username: user.username
+                username: user.username,
+                role : user.role
             }, process.env.NEXTAUTH_SECRET!)
 
             return {
                 id: user.id,
                 username: user.username,
+                role : user.role,
                 token
             }
         }

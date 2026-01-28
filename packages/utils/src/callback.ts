@@ -11,7 +11,8 @@ export const callbacks: Partial<CallbacksOptions> = {
             return {
                 ...token,
                 id: user.id,
-                username: user.username
+                username: user.username,
+                role : user.role
             }
         }
 
@@ -25,7 +26,8 @@ export const callbacks: Partial<CallbacksOptions> = {
                 ...session,
                 user : {
                     id : user.id,
-                    username : user.username
+                    username : user.username,
+                    role : user.role
                 }
             }
         }
