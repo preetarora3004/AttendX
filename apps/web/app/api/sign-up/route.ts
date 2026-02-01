@@ -11,13 +11,13 @@ export async function POST(req: NextRequest) {
         const existingUser = await client.user.findUnique({
             where: {
                 username,
-                password
             }
         })
 
         if (existingUser) return NextResponse.json({
             message: "User already exist"
         }, { status: 400 })
+
 
         const user = await client.user.create({
             data: {
@@ -28,13 +28,16 @@ export async function POST(req: NextRequest) {
             }
         })
 
+        if(!process.env.JWT_SECRET) throw new Error("Jwt_SECRET missing");
+
         const token = jwt.sign({
 
             id: user.id,
             username: user.username,
             role: user.role
 
-        }, process.env.JWT_SECRET as string);
+        }, process.env.JWT_SECRET);
+
 
         return NextResponse.json({
             message: "User created successfully",
@@ -43,7 +46,7 @@ export async function POST(req: NextRequest) {
     }
     catch (err) {
         return NextResponse.json({
-            message: "Unable to create user",
+            err
         }, { status: 500 })
     }
 }
