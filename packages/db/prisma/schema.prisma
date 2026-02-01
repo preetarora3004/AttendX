@@ -12,39 +12,48 @@ model User {
   username   String    @unique
   password   String
   name       String
-  role       Role
+  role       Role      @default(student)
+  time_table String[]
   user       Student[]
   teacher    Teacher[]
-  time_table String[]
 }
 
 model Student {
   id         String      @unique @default(cuid())
   rollNum    Int         @unique
   course     String
-  user       User        @relation(fields: [userId], references: [id])
   userId     String
-  class      Class?      @relation(fields: [classId], references: [id])
   classId    String?
   attendance Attendance?
+  class      Class?      @relation(fields: [classId], references: [id])
+  user       User        @relation(fields: [userId], references: [id])
 }
 
 model Teacher {
-  id        String  @unique @default(cuid())
-  teacherId Int     @unique
+  id        String    @unique @default(cuid())
+  teacherId Int       @unique
   dept      String
-  user      User    @relation(fields: [userId], references: [id])
   userId    String
   classes   Class[]
+  user      User      @relation(fields: [userId], references: [id])
+  subject   Subject[]
 }
 
 model Class {
   id             String    @unique @default(cuid())
   name           String    @unique
-  teacher        Teacher   @relation(fields: [teacherId], references: [id])
   teacherId      String
   total_strength Int       @default(0)
+  teacher        Teacher   @relation(fields: [teacherId], references: [id])
   students       Student[]
+}
+
+model Subject {
+  id          String  @unique @default(cuid())
+  name        String
+  course_code String
+  teacher     Teacher @relation(fields: [teacherId], references: [id])
+  teacherId   String
 }
 
 enum Role {

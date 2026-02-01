@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
     const { name } = body;
 
     try {
-        const teacher = await client.user.findFirst({
+        const teacher = await client.user.findMany({
             where: {
                 name,
                 role: "teacher"
