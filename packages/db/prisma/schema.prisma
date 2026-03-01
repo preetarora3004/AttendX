@@ -1,67 +1,151 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
 }
 
+enum Role {
+  STUDENT
+  TEACHER
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+}
+
 model User {
-  id         String    @unique @default(cuid())
-  username   String    @unique
-  password   String
-  name       String
-  role       Role      @default(student)
-  time_table String[]
-  user       Student[]
-  teacher    Teacher[]
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String
+  name      String
+  role      Role
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  student Student?
+  teacher Teacher?
 }
 
 model Student {
-  id         String      @unique @default(cuid())
-  rollNum    Int         @unique
-  course     String
-  userId     String
-  classId    String?
-  attendance Attendance?
-  class      Class?      @relation(fields: [classId], references: [id])
-  user       User        @relation(fields: [userId], references: [id])
+  id      String @id @default(cuid())
+  rollNum Int    @unique
+  course  String
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  classId String?
+  class   Class?  @relation(fields: [classId], references: [id], onDelete: SetNull)
+
+  attendance      Attendance[]
+  eventAttendance EventAttendance[]
+
+  createdAt DateTime @default(now())
 }
 
 model Teacher {
-  id        String    @unique @default(cuid())
-  teacherId Int       @unique
+  id        String @id @default(cuid())
+  teacherId Int    @unique
   dept      String
-  userId    String
-  classes   Class[]
-  user      User      @relation(fields: [userId], references: [id])
-  subject   Subject[]
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  subjects Subject[]
+  classes  Class[]
+
+  createdAt DateTime @default(now())
 }
 
 model Class {
-  id             String    @unique @default(cuid())
-  name           String    @unique
-  teacherId      String
-  total_strength Int       @default(0)
-  teacher        Teacher   @relation(fields: [teacherId], references: [id])
-  students       Student[]
+  id            String @id @default(cuid())
+  name          String @unique
+  totalStrength Int    @default(0)
+
+  teacherId String
+  teacher   Teacher @relation(fields: [teacherId], references: [id], onDelete: Restrict)
+
+  students  Student[]
+  timetable ClassTimetable[]
+
+  createdAt DateTime @default(now())
 }
 
 model Subject {
-  id          String  @unique @default(cuid())
-  name        String
-  course_code String
-  teacher     Teacher @relation(fields: [teacherId], references: [id])
-  teacherId   String
+  id         String @id @default(cuid())
+  name       String
+  courseCode String
+
+  teacherId String
+  teacher   Teacher @relation(fields: [teacherId], references: [id], onDelete: Restrict)
+
+  lectures       Lecture[]
+  classTimeTable ClassTimetable[]
+
+  @@unique([name, courseCode])
 }
 
-enum Role {
-  student
-  teacher
+model Lecture {
+  id String @id @default(cuid())
+
+  subjectId String
+  subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  date DateTime @default(now())
+
+  attendance Attendance[]
 }
 
-enum Attendance {
-  present
-  absent
+model Attendance {
+  id String @id @default(cuid())
+
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  lectureId String
+  lecture   Lecture @relation(fields: [lectureId], references: [id], onDelete: Cascade)
+
+  status AttendanceStatus @default(ABSENT)
+
+  @@unique([studentId, lectureId])
+}
+
+model Event {
+  id        String   @id @default(cuid())
+  name      String
+  startDate DateTime
+  endDate   DateTime
+
+  participants EventAttendance[]
+}
+
+model EventAttendance {
+  id String @id @default(cuid())
+
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  eventId String
+  event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  status AttendanceStatus @default(ABSENT)
+
+  @@unique([studentId, eventId])
+}
+
+model ClassTimetable {
+  id        String   @id @default(cuid())
+  day       String
+  startTime DateTime
+  endTime   DateTime
+
+  classId String
+  class   Class  @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  subjectId String
+  subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
 }

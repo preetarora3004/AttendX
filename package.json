@@ -1,5 +1,5 @@
 {
-  "name": "attendX",
+  "name": "@workspace/attendx",
   "private": true,
   "scripts": {
     "build": "turbo run build",
