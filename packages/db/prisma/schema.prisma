@@ -41,6 +41,9 @@ model Student {
   classId String?
   class   Class?  @relation(fields: [classId], references: [id], onDelete: SetNull)
 
+  eventId String?
+  event   Event?  @relation(fields: [eventId], references: [id], onDelete: SetNull)
+
   attendance      Attendance[]
   eventAttendance EventAttendance[]
 
@@ -121,6 +124,7 @@ model Event {
   endDate   DateTime
 
   participants EventAttendance[]
+  student      Student[]
 }
 
 model EventAttendance {

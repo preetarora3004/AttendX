@@ -1,0 +1,140 @@
+import { Request, Response, NextFunction } from "express";
+import { StudentService } from "@workspace/backend/modules/student/student.service";
+import { studentSchema, viewAttendanceSchema, markAttendanceSchema, joinEventSchema } from "@workspace/backend/modules/student/student.validator";
+
+const service = new StudentService();
+
+export class StudentController {
+    async create(req: Request, res: Response, next: NextFunction) {
+        try {
+            const parsed = studentSchema.safeParse(req.body);
+
+            if (!parsed.success) {
+                return res.status(400).json({
+                    success: false,
+                    error: "Invalid schema"
+                })
+            }
+            const student = await service.createStudent(parsed.data);
+
+            return res.status(201).json({
+                success: true,
+                data: student
+            })
+        }
+        catch (err) {
+            next(err);
+        }
+    }
+
+    async getAttendance(req: Request, res: Response, next: NextFunction) {
+        try {
+            const payload = {
+                studentId: req.params.studentId,
+                subjectId: req.params.subjectId
+            }
+
+            const parsed = viewAttendanceSchema.safeParse(payload);
+
+            if (!parsed.success) {
+                return res.status(400).json({
+                    success: false,
+                    error: "Invalid schema"
+                })
+            }
+
+            const attendance = await service.viewAttendance(parsed.data);
+
+            return res.status(200).json({
+                success: true,
+                data: attendance
+            })
+        }
+        catch (err) {
+            next(err);
+        }
+    }
+
+    async getStudent(req: Request, res: Response, next: NextFunction) {
+        try {
+            const userId = (req as any).user.id;
+            const student = await service.getStudent(userId);
+
+            return res.status(200).json({
+                success: true,
+                data: student
+            })
+        }
+        catch (err) {
+            next(err);
+        }
+    }
+
+    async markAttendance(req: Request, res: Response, next: NextFunction) {
+        try {
+            const payload = {
+                studentId: req.params.studentId,
+                lectureId: req.params.lectureId
+            }
+
+            const parsed = markAttendanceSchema.safeParse(payload);
+
+            if (!parsed.success) {
+                return res.status(400).json({
+                    success: false,
+                    error: "Invalid schema"
+                })
+            }
+
+            const markPresent = await service.markAttendanceByStudent(parsed.data);
+
+            return res.status(200).json({
+                success: true
+            })
+        }
+        catch (err) {
+            next(err);
+        }
+    }
+
+    async getTimeTable(req: Request, res: Response, next: NextFunction) {
+        try {
+            const name = req.body;
+            const timeTable = await service.getTimeTable(name);
+
+            return res.status(200).json({
+                success: true,
+                data: timeTable
+            })
+        }
+        catch (err) {
+            next(err);
+        }
+    }
+
+    async joinEvent(req: Request, res: Response, next: NextFunction) {
+        try {
+            const payload = {
+                userId: (req as any).user.id as string,
+                eventId: req.params.eventId
+            }
+            const parsed = joinEventSchema.safeParse(payload);
+
+            if(!parsed.success) {
+                return res.status(400).json({
+                    success: false,
+                    error: "Invalid schema"
+                })
+            }
+
+            const joinEvent = await service.joinEvent(parsed.data);
+
+            return res.status(200).json({
+                success: true,
+            })
+        }
+        catch(err) {
+            next(err);
+        } 
+    }
+}
