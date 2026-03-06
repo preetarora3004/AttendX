@@ -13,6 +13,7 @@
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^25.3.3",
+    "@types/node-cache": "^4.2.5",
     "@types/qrcode": "^1.5.6"
   },
   "peerDependencies": {
@@ -22,9 +23,11 @@
     "@workspace/db": "workspace:*",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
+    "crypto": "^1.0.1",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
+    "node-cache": "^5.1.2",
     "qrcode": "^1.5.4",
     "zod": "^4.3.6"
   }
