@@ -101,6 +101,7 @@ model Lecture {
   date DateTime @default(now())
 
   attendance Attendance[]
+  @@index([subjectId])
 }
 
 model Attendance {
@@ -115,6 +116,7 @@ model Attendance {
   status AttendanceStatus @default(ABSENT)
 
   @@unique([studentId, lectureId])
+  @@index([lectureId])
 }
 
 model Event {
@@ -139,6 +141,7 @@ model EventAttendance {
   status AttendanceStatus @default(ABSENT)
 
   @@unique([studentId, eventId])
+  @@index([eventId])
 }
 
 model ClassTimetable {
