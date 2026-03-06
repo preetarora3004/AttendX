@@ -120,7 +120,7 @@ export class StudentController {
             }
             const parsed = joinEventSchema.safeParse(payload);
 
-            if(!parsed.success) {
+            if (!parsed.success) {
                 return res.status(400).json({
                     success: false,
                     error: "Invalid schema"
@@ -133,8 +133,8 @@ export class StudentController {
                 success: true,
             })
         }
-        catch(err) {
+        catch (err) {
             next(err);
-        } 
+        }
     }
 }

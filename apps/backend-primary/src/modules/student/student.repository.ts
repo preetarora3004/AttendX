@@ -7,11 +7,7 @@ export class StudentRepository {
         userId: string,
         course: string
     }) {
-        return client.student.create({
-            rollNum: data.rollNum,
-            userId: data.userId,
-            course: data.course
-        })
+        return client.student.create({ data })
     }
 
     async getAttendance(data: {
@@ -59,8 +55,8 @@ export class StudentRepository {
     async getTimeTableByName(name: string) {
         return client.class.findUnique({
             where: { name },
-            includes: {
-                timeTable: true
+            select: {
+                timetable: true
             }
         })
     }
@@ -71,7 +67,11 @@ export class StudentRepository {
     }) {
         return client.student.update({
             where: { userId: data.userId },
-            data: { eventId: data.eventId }
+            data: {
+                event: {
+                    connect: { id: data.eventId }
+                }
+            }
         })
     }
 }

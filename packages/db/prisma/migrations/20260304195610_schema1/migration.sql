@@ -24,6 +24,7 @@ CREATE TABLE "Student" (
     "course" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "classId" TEXT,
+    "eventId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Student_pkey" PRIMARY KEY ("id")
@@ -134,7 +135,16 @@ CREATE UNIQUE INDEX "Class_name_key" ON "Class"("name");
 CREATE UNIQUE INDEX "Subject_name_courseCode_key" ON "Subject"("name", "courseCode");
 
 -- CreateIndex
+CREATE INDEX "Lecture_subjectId_idx" ON "Lecture"("subjectId");
+
+-- CreateIndex
+CREATE INDEX "Attendance_lectureId_idx" ON "Attendance"("lectureId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Attendance_studentId_lectureId_key" ON "Attendance"("studentId", "lectureId");
+
+-- CreateIndex
+CREATE INDEX "EventAttendance_eventId_idx" ON "EventAttendance"("eventId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "EventAttendance_studentId_eventId_key" ON "EventAttendance"("studentId", "eventId");
@@ -144,6 +154,9 @@ ALTER TABLE "Student" ADD CONSTRAINT "Student_userId_fkey" FOREIGN KEY ("userId"
 
 -- AddForeignKey
 ALTER TABLE "Student" ADD CONSTRAINT "Student_classId_fkey" FOREIGN KEY ("classId") REFERENCES "Class"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Student" ADD CONSTRAINT "Student_eventId_fkey" FOREIGN KEY ("eventId") REFERENCES "Event"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Teacher" ADD CONSTRAINT "Teacher_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

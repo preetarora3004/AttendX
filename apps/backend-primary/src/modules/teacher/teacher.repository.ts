@@ -40,3 +40,4 @@ export class TeacherRepository {
         return client.classTimetable.create({ data })
     }
 }
+
