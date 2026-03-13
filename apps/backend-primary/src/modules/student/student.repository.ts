@@ -32,9 +32,10 @@ export class StudentRepository {
             },
             select: {
                 id: true,
-                classId: true,
+                class: true,
                 course: true,
-                rollNum: true
+                rollNum: true,
+                createdAt: true
             }
         })
     }

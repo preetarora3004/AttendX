@@ -4,7 +4,6 @@ export function SignIn() {
 
     const setSignIn = store((s) => s.setSignIn)
 
-
     return (
         <div className="min-h-screen bg-linear-to-br from-slate-200 via-slate-300 to-blue-300 flex items-center justify-center px-4 py-4">
 
