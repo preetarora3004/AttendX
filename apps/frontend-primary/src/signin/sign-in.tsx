@@ -1,6 +1,28 @@
 import { store } from "@workspace/utils/store/zustand"
+import { useState } from "react";
 
 export function SignIn() {
+
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+
+    const handleSubmit = async(e : React.FormEvent<HTMLFormElement>)=> {
+        e.preventDefault()
+
+        const res = await fetch("api/signin", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body : JSON.stringify({
+                username,
+                password
+            })
+        })
+
+        const data = await res.json();
+        console.log(data);
+    }
 
     const setSignIn = store((s) => s.setSignIn)
 
@@ -25,6 +47,7 @@ export function SignIn() {
                         </label>
 
                         <input
+                            onChange={(e)=>{setUsername(e.target.inputMode)}}
                             placeholder="you@example.com"
                             type="text"
                             className="w-full border px-3 py-2 border-gray-200 rounded-md bg-[#F6F8FF] text-gray-500 text-sm focus:outline focus:ring-2 focus:ring-blue-500"
@@ -38,6 +61,7 @@ export function SignIn() {
                         </label>
 
                         <input
+                            onChange = {(e)=>setPassword(e.target.value)}
                             placeholder="****"
                             type="password"
                             className="w-full border px-3 py-2 border-gray-200 rounded-md bg-[#F6F8FF] text-gray-500 text-sm focus:outline focus:ring-2 focus:ring-blue-500"
@@ -45,6 +69,7 @@ export function SignIn() {
                     </div>
 
                     <button
+                        onSubmit={handleSubmit}
                         type="submit"
                         className="w-full border border-[#1D6AE4] text-white bg-[#1D6AE4] px-3 py-2 rounded-xl hover:bg-blue-500 cursor-pointer">
                         Sign In
