@@ -3,10 +3,13 @@ import { useState } from "react";
 import react from '../assets/react.svg'
 import { Mail, Phone, MapPin, BookOpen, Clock, Award, Users2, Calendar, Plus } from "lucide-react";
 import LectureCard from "./components/lecture-card"
-import ClassCard from "@workspace/ui/components/ui/class-card";
+import ClassCard from "./components/class.card";
 import { Teacher, Class, Lecture, Event } from "./types/teacher.types";
-import { store } from "@workspace/utils/store/zustand";
-import { useShallow } from "zustand/shallow";
+import EventCard from './components/event.card'
+import CreateClassModal from './components/create.class.modal'
+import CreateLectureModal from './components/create.lecture.modal'
+import CreateEventModal from './components/create.event.modal'
+import StudentManagementModal from './components/student.management.modal'
 
 export default function TeacherDashboard() {
 
@@ -345,7 +348,117 @@ export default function TeacherDashboard() {
                     </div>
                 )}
 
+                {activeTab === 'classes' && (
+                    <div className="space-y-6">
+                        <div className="flex items-center justify-between animate-slide-up-delay">
+                            <h2 className="text-2xl font-bold text-foreground">All Classes</h2>
+                            <button
+                                onClick={() => setIsCreateClassOpen(true)}
+                                className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 flex items-center gap-2 font-medium hover:shadow-lg hover:shadow-primary/30"
+                            >
+                                <Plus className="w-4 h-4" />
+                                New Class
+                            </button>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {classes.map((classItem, idx) => (
+                                <ClassCard
+                                    key={classItem.id}
+                                    class={classItem}
+                                    delay={idx}
+                                    onManageStudents={() => {
+                                        setSelectedClass(classItem)
+                                        setIsStudentManagementOpen(true)
+                                    }}
+                                    onDelete={handleDeleteClass}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                )}
+                
+                {activeTab === 'lectures' && (
+                    <div className="space-y-6">
+                        <div className="flex items-center justify-between animate-slide-up-delay">
+                            <h2 className="text-2xl font-bold text-foreground">All Lectures</h2>
+                            <button
+                                onClick={() => setIsCreateLectureOpen(true)}
+                                className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 flex items-center gap-2 font-medium hover:shadow-lg hover:shadow-primary/30"
+                            >
+                                <Plus className="w-4 h-4" />
+                                New Lecture
+                            </button>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {lectures.map((lecture, idx) => (
+                                <LectureCard
+                                    key={lecture.id}
+                                    lecture={lecture}
+                                    classItem={classes.find((c) => c.id === lecture.classId)}
+                                    delay={idx}
+                                    onDelete={handleDeleteLecture}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {activeTab === 'events' && (
+                    <div className="space-y-6">
+                        <div className="flex items-center justify-between animate-slide-up-delay">
+                            <h2 className="text-2xl font-bold text-foreground">All Events</h2>
+                            <button
+                                onClick={() => setIsCreateEventOpen(true)}
+                                className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 flex items-center gap-2 font-medium hover:shadow-lg hover:shadow-primary/30"
+                            >
+                                <Plus className="w-4 h-4" />
+                                New Event
+                            </button>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {events.map((event, idx) => (
+                                <EventCard key={event.id} event={event} delay={idx} onDelete={handleDeleteEvent} />
+                            ))}
+                        </div>
+                    </div>
+                )}
+
             </main>
+
+            <CreateClassModal
+                isOpen={isCreateClassOpen}
+                onClose={() => setIsCreateClassOpen(false)}
+                onSubmit={handleCreateClass}
+            />
+
+            <CreateLectureModal
+                isOpen={isCreateLectureOpen}
+                onClose={() => setIsCreateLectureOpen(false)}
+                onSubmit={handleCreateLecture}
+                classes={classes}
+            />
+
+            <CreateEventModal
+                isOpen={isCreateEventOpen}
+                onClose={() => setIsCreateEventOpen(false)}
+                onSubmit={handleCreateEvent}
+            />
+
+            {selectedClass && (
+                <StudentManagementModal
+                    isOpen={isStudentManagementOpen}
+                    onClose={() => {
+                        setIsStudentManagementOpen(false)
+                        setSelectedClass(null)
+                    }}
+                    class={selectedClass}
+                    onAddStudent={handleAddStudent}
+                    onRemoveStudent={handleRemoveStudent}
+                />
+            )}
 
         </div>
     );

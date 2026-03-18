@@ -1,9 +1,12 @@
-import { LogOut, BookOpen, Clock, Calendar, Loader } from "lucide-react";
+import { LogOut, BookOpen, Clock, Calendar, Loader, QrCode } from "lucide-react";
 import { useEffect, useState } from "react";
 import { store } from "@workspace/utils/store/zustand";
 import { useShallow } from "zustand/shallow";
+import QRScanner from "./components/qr-code";
 
 export function DashBoard() {
+
+    const [showQRScanner, setShowQRScanner] = useState(false)
     const { student, loadStudent, timeTable, setTimeTable, user, setUser } =
         store(
             useShallow((s) => ({
@@ -16,13 +19,13 @@ export function DashBoard() {
             })),
         );
     const [isLoading, setLoading] = useState(true);
-    const [isAuthenticated, setAuthenticate] = useState(false);
+    const [isAuthenticated, setAuthenticate] = useState(true);
 
     useEffect(() => {
         const token = localStorage.getItem("token");
 
         if (!token) {
-            setLoading(true);
+            setLoading(false);
             return;
         }
 
@@ -32,9 +35,9 @@ export function DashBoard() {
                 setAuthenticate(true);
             } catch {
                 localStorage.removeItem("token");
-                setAuthenticate(false);
+                setAuthenticate(true);
             } finally {
-                setLoading(true);
+                setLoading(false);
             }
         }
 
@@ -146,7 +149,7 @@ export function DashBoard() {
             </nav>
 
             <div className="max-w-7xl mx-auto py-9 px-3 space-y-8">
-                <div className="grid md:grid-cols-3 gap-6">
+                <div className="grid md:grid-cols-3 gap-6 animate-slide-up">
                     <div className="md:col-span-2 shadow-lg p-8 shadow-blue-100 hover:shadow-lg/50 transition-all duration-500 rounded-2xl bg-white">
                         <div className="flex items-start justify-between mb-6">
                             <div className="flex gap-6 flex-1">
@@ -176,89 +179,111 @@ export function DashBoard() {
                             <div>Progress</div>
                         </div>
                     </div>
-                </div>
 
-                <div className="w-full flex justify-between items-center">
-                    <div>
-                        <h3 className="text-2xl font-medium">Enrolled Classes</h3>
-                        <p className="text-sm text-gray-500 mt-1">
-                            You are enrolled in 4 courses
-                        </p>
-                    </div>
-
-                    <button className="text-blue-600 text-sm px-4 py-2 hover:bg-[#dae5fd] rounded-xl">
-                        View All →
-                    </button>
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-4">
-                    {enrolledClasses.map((clx, idx) => (
-                        <div
-                            key={clx.id}
-                            className={`bg-linear-to-br ${clx.color} rounded-2xl p-6 text-white shadow-lg hover:shadow-xl hover:scale-103 transition-all duration-300 cursor-pointer group`}
-                            style={{ animationDelay: `${(idx + 2) * 100}ms` }}
-                        >
-                            <div className="flex items-start justify-between mb-4">
-                                <div>
-                                    <h2 className="text-lg font-semibold">{clx.name}</h2>
-                                    <p className="text-sm font-extralight">{clx.professor}</p>
-                                </div>
-
-                                <BookOpen className="w-6 h-6 text-white/60" />
-                            </div>
-
-                            <div className="space-y-2 text-sm text-white/90 mb-4">
-                                <div className="flex items-center gap-2">
-                                    <Clock className="w-4 h-4" />
-                                    <span>{clx.time}</span>
-                                </div>
-
-                                <div className="flex items-center gap-2">
-                                    <Calendar className="h-4 w-4" />
-                                    <span>{clx.room}</span>
-                                </div>
-                            </div>
+                    <div
+                        onClick={() => setShowQRScanner(true)}
+                        className="bg-linear-to-br from-primary/10 to-primary/5 border-2 border-dashed border-primary/30 rounded-2xl p-8 flex flex-col items-center justify-center cursor-pointer hover:border-primary/60 hover:from-primary/15 hover:to-primary/10 transition-all duration-300 group animate-slide-up-delay-2"
+                    >
+                        <div className="w-20 h-20 bg-primary/20 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-primary/30 transition-colors duration-300">
+                            <QrCode className="w-10 h-10 text-primary" />
                         </div>
-                    ))}
-                </div>
-
-                <div className="w-full flex items-center">
-                    <div>
-                        <h3 className="text-2xl font-medium">Weekly Timetable</h3>
-                        <p className="text-sm text-gray-500 mt-1">
-                            Your weekly schedule for this week
-                        </p>
+                        <h3 className="font-semibold text-foreground text-center mb-1">Attendance</h3>
+                        <p className="text-sm text-muted-foreground text-center">Scan QR to mark attendance</p>
+                        <div className="mt-4 text-primary font-semibold text-sm group-hover:translate-x-1 transition-transform duration-300">
+                            Scan Now →
+                        </div>
                     </div>
                 </div>
 
-                <div className="bg-[#ffffff] border border-[#eceef5] rounded-2xl overflow-hidden hover:shadow-lg hover:shadow-primary/10 transition-all duration-500">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-0 divide-y md:divide-y-0 md:divide-x divide-[#f0f5ff]">
-                        {timetable.map((daySchedule, idx) => (
-                            <div key={daySchedule.day} className="p-6">
-                                <h4 className="font-bold text-[#132139] mb-4 text-lg">
-                                    {daySchedule.day}
-                                </h4>
-                                {daySchedule.classes.length > 0 ? (
-                                    <div className="space-y-3">
-                                        {daySchedule.classes.map((cls, cidx) => (
-                                            <div
-                                                key={cidx}
-                                                className="pl-4 border-l-4 border-[#1c69e3]/50 hover:border-[#1c69e3] py-2 transition-colors duration-300"
-                                            >
-                                                <p className="text-sm font-medium text-[#132139]">
-                                                    {cls}
-                                                </p>
-                                            </div>
-                                        ))}
+                <div className="animate-slide-up-delay-2">
+                    <div className="w-full flex justify-between items-center mb-6">
+                        <div>
+                            <h3 className="text-2xl font-medium">Enrolled Classes</h3>
+                            <p className="text-sm text-gray-500 mt-1">
+                                You are enrolled in 4 courses
+                            </p>
+                        </div>
+
+                        <button className="text-blue-600 text-sm px-4 py-2 hover:bg-[#dae5fd] rounded-xl">
+                            View All →
+                        </button>
+                    </div>
+
+
+                    <div className="grid md:grid-cols-2 gap-4 mb-5">
+                        {enrolledClasses.map((clx, idx) => (
+                            <div
+                                key={clx.id}
+                                className={`bg-linear-to-br ${clx.color} rounded-2xl p-6 text-white shadow-lg hover:shadow-xl hover:scale-103 transition-all duration-300 cursor-pointer group
+                                animate-slide-up-delay-${idx + 3}`}
+                                style={{ animationDelay: `${(idx + 2) * 100}ms` }}
+                            >
+                                <div className="flex items-start justify-between mb-4">
+                                    <div>
+                                        <h2 className="text-lg font-semibold">{clx.name}</h2>
+                                        <p className="text-sm font-extralight">{clx.professor}</p>
                                     </div>
-                                ) : (
-                                    <p className="text-sm text-muted-[#132139]">No classes</p>
-                                )}
+
+                                    <BookOpen className="w-6 h-6 text-white/60" />
+                                </div>
+
+                                <div className="space-y-2 text-sm text-white/90 mb-4">
+                                    <div className="flex items-center gap-2">
+                                        <Clock className="w-4 h-4" />
+                                        <span>{clx.time}</span>
+                                    </div>
+
+                                    <div className="flex items-center gap-2">
+                                        <Calendar className="h-4 w-4" />
+                                        <span>{clx.room}</span>
+                                    </div>
+                                </div>
                             </div>
                         ))}
                     </div>
+
+                    <div className="w-full flex items-center">
+                        <div className="mb-6">
+                            <h3 className="text-2xl font-medium">Weekly Timetable</h3>
+                            <p className="text-sm text-gray-500 mt-1">
+                                Your weekly schedule for this week
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="bg-[#ffffff] border border-[#eceef5] rounded-2xl overflow-hidden hover:shadow-lg hover:shadow-primary/10 transition-all duration-500">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-0 divide-y md:divide-y-0 md:divide-x divide-[#f0f5ff]">
+                            {timetable.map((daySchedule, idx) => (
+                                <div key={daySchedule.day} className="p-6">
+                                    <h4 className="font-bold text-[#132139] mb-4 text-lg">
+                                        {daySchedule.day}
+                                    </h4>
+                                    {daySchedule.classes.length > 0 ? (
+                                        <div className="space-y-3">
+                                            {daySchedule.classes.map((cls, cidx) => (
+                                                <div
+                                                    key={cidx}
+                                                    className="pl-4 border-l-4 border-[#1c69e3]/50 hover:border-[#1c69e3] py-2 transition-colors duration-300"
+                                                >
+                                                    <p className="text-sm font-medium text-[#132139]">
+                                                        {cls}
+                                                    </p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <p className="text-sm text-muted-[#132139]">No classes</p>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
                 </div>
             </div>
+            {showQRScanner && (
+                <QRScanner onClose={() => setShowQRScanner(false)} />
+            )}
         </div>
     );
 }
