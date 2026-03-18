@@ -21,7 +21,7 @@ export default function ClassCard({ class: classItem, delay, onManageStudents, o
   return (
     <div className={`bg-card border border-border rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-500 ${animationDelay}`}>
       
-      <div className={`bg-gradient-to-r ${classItem.color} h-24 relative overflow-hidden`}>
+      <div className={`bg-linear-to-r ${classItem.color} h-24 relative overflow-hidden`}>
         <div className="absolute inset-0 bg-black/10" />
       </div>
 
@@ -52,7 +52,7 @@ export default function ClassCard({ class: classItem, delay, onManageStudents, o
 
         <div className="space-y-3 pt-4 border-t border-border">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+            <div className="w-8 h-8 -8 rounded-lg bg-primary/10 flex items-center justify-center">
               <Users className="w-4 h-4 text-primary" />
             </div>
             <div className="flex-1">
@@ -87,7 +87,7 @@ export default function ClassCard({ class: classItem, delay, onManageStudents, o
             <p className="text-xs text-muted-foreground mb-2">Student IDs</p>
             <div className="flex flex-wrap gap-2">
               {classItem.students.slice(0, 3).map((student, idx) => (
-                <span key={idx} className="px-2 py-1 rounded-lg bg-primary/10 text-primary text-xs font-medium">
+                <span key={idx} className="px-3 py-1 rounded-lg bg-primary/10 text-primary text-xs font-medium">
                   {student}
                 </span>
               ))}

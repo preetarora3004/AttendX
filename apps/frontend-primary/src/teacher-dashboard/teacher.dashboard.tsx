@@ -2,48 +2,11 @@ import { LogOutIcon } from "lucide-react";
 import { useState } from "react";
 import react from '../assets/react.svg'
 import { Mail, Phone, MapPin, BookOpen, Clock, Award, Users2, Calendar, Plus } from "lucide-react";
-import LectureCard from "@workspace/ui/components/ui/lecture-card"
+import LectureCard from "./components/lecture-card"
 import ClassCard from "@workspace/ui/components/ui/class-card";
-
-interface Teacher {
-    id: string
-    name: string
-    email: string
-    phone: string
-    department: string
-    subject: string
-    joinDate: string
-    officeRoom: string
-}
-
-interface Class {
-    id: string
-    name: string
-    code: string
-    students: string[]
-    schedule: string
-    room: string
-    color: string
-}
-
-interface Lecture {
-    id: string
-    classId: string
-    lectureId: string
-    qrCode: string
-    date: string
-    time: string
-    attendance: number
-}
-
-interface Event {
-    id: string
-    title: string
-    date: string
-    time: string
-    description: string
-    type: 'exam' | 'assignment' | 'seminar' | 'other'
-}
+import { Teacher, Class, Lecture, Event } from "./types/teacher.types";
+import { store } from "@workspace/utils/store/zustand";
+import { useShallow } from "zustand/shallow";
 
 export default function TeacherDashboard() {
 

@@ -4,6 +4,10 @@ import { ClassSchema, SubjectSchema, LectureSchema, EventSchema, ClassTimeTableS
 export class TeacherService {
     private repo = new TeacherRepository();
 
+    async getTeacherById(userId: string) {
+        return await this.repo.getTeacherByUserId(userId);
+    }
+
     async createClass(data: ClassSchema) {
         return await this.repo.createClass(data);
     }

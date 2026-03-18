@@ -1,3 +1,4 @@
+import { authMiddleware } from "@workspace/backend/middlewares/auth.middleware";
 import { authorizeRole } from "@workspace/backend/middlewares/role.middleware";
 import { TeacherController } from "@workspace/backend/modules/teacher/teacher.controller"
 import { Router } from "express"
@@ -5,6 +6,7 @@ import { Router } from "express"
 const router = Router();
 const controller = new TeacherController();
 
+router.get("/get-teacher", authMiddleware, controller.getTeacherById);
 router.post("/class", authorizeRole, controller.createClass);
 router.post("/subject", authorizeRole, controller.createSubject);
 router.post("/lecture", authorizeRole, controller.createLecture);

@@ -27,6 +27,16 @@ type authPage = {
 
     timeTable: Array<string> | null,
     setTimeTable: (token: string) => Promise<void>
+
+    teacher: {
+        id: string,
+        teacherId: number,
+        dept: string,
+        subjects: Array<object>
+        classes: Array<object>
+    } | null
+
+    setTeacher: (token: string) => Promise<void>
 }
 
 export const store = create<authPage>((set) => ({
@@ -79,5 +89,19 @@ export const store = create<authPage>((set) => ({
         const data = await res.json();
 
         set({ timeTable: data.data.class.timeTable })
+    },
+
+    teacher: null,
+    setTeacher: async (token: string) => {
+        const res = await fetch("http://localhost:3000/api/teacher/get-teacher", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        })
+
+        const data = await res.json();
+        set({ teacher: data.data });
     }
 }))

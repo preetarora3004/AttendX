@@ -5,6 +5,22 @@ import { validateClassSchema, validateSubjectSchema, validateLectureSchema, vali
 const service = new TeacherService();
 
 export class TeacherController {
+
+    async getTeacherById(req: Request, res: Response, next: NextFunction) {
+        try {
+            const userId = req.user!.id;
+            const teacher = await service.getTeacherById(userId);
+
+            return res.status(200).json({
+                success: true,
+                data: teacher
+            })
+        }
+        catch(err) {
+            next(err);
+        }
+    }
+
     async createClass(req: Request, res: Response, next: NextFunction) {
         try {
             const parsed = validateClassSchema.safeParse(req.body);
