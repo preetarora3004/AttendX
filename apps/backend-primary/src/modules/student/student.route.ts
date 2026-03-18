@@ -10,7 +10,8 @@ router.post("/enrole-student", authorizeRole, controller.create);
 router.get("/attendance/:studentId/:subjectId", authMiddleware, controller.getAttendance);
 router.get("/get-student", authMiddleware, controller.getStudent);
 router.post("markAttendance/:studentId/:lectureId", authMiddleware, controller.markAttendance);
-router.get("/timeTable", authMiddleware, controller.getTimeTable);
+router.get("/timeTable", authMiddleware, controller.getTimeTableByUserId);
 router.post("/join-event/:eventId", authMiddleware, controller.joinEvent);
+router.get("/get-timeTable", authMiddleware, controller.getTimeTable);
 
 export default router;

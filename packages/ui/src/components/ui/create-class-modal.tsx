@@ -45,12 +45,11 @@ export default function CreateClassModal({ isOpen, onClose, onSubmit }: CreateCl
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
+  
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
 
-      {/* Modal */}
       <div className="relative bg-card border border-border rounded-2xl shadow-2xl max-w-md w-full animate-slide-up">
-        {/* Header */}
+
         <div className="bg-linear-to-r from-primary to-primary/60 p-6 flex items-center justify-between">
           <h2 className="text-xl font-bold text-primary-foreground">Create New Class</h2>
           <button
@@ -61,9 +60,8 @@ export default function CreateClassModal({ isOpen, onClose, onSubmit }: CreateCl
           </button>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          {/* Class Name */}
+
           <div>
             <label className="block text-sm font-semibold text-foreground mb-2">Class Name</label>
             <input
@@ -75,7 +73,6 @@ export default function CreateClassModal({ isOpen, onClose, onSubmit }: CreateCl
             />
           </div>
 
-          {/* Class Code */}
           <div>
             <label className="block text-sm font-semibold text-foreground mb-2">Class Code</label>
             <input
@@ -87,7 +84,6 @@ export default function CreateClassModal({ isOpen, onClose, onSubmit }: CreateCl
             />
           </div>
 
-          {/* Schedule */}
           <div>
             <label className="block text-sm font-semibold text-foreground mb-2">Schedule</label>
             <input
@@ -99,7 +95,6 @@ export default function CreateClassModal({ isOpen, onClose, onSubmit }: CreateCl
             />
           </div>
 
-          {/* Room */}
           <div>
             <label className="block text-sm font-semibold text-foreground mb-2">Room Number</label>
             <input
@@ -111,7 +106,6 @@ export default function CreateClassModal({ isOpen, onClose, onSubmit }: CreateCl
             />
           </div>
 
-          {/* Color Selection */}
           <div>
             <label className="block text-sm font-semibold text-foreground mb-3">Class Color</label>
             <div className="grid grid-cols-3 gap-2">
@@ -128,7 +122,6 @@ export default function CreateClassModal({ isOpen, onClose, onSubmit }: CreateCl
             </div>
           </div>
 
-          {/* Buttons */}
           <div className="flex gap-3 pt-4">
             <button
               type="button"

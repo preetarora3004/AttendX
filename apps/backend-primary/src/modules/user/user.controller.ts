@@ -33,7 +33,8 @@ export class UserController {
 
     async getById(req: Request, res: Response, next: NextFunction) {
 
-        const user = await service.getUser(req.params.id as string);
+        const user = await service.getUser(req.user!.id);
+        console.log(user)
         return res.status(201).json({
             success: true,
             data: user

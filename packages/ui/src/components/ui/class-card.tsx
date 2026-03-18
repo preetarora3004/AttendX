@@ -20,14 +20,13 @@ export default function ClassCard({ class: classItem, delay, onManageStudents, o
 
   return (
     <div className={`bg-card border border-border rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-500 ${animationDelay}`}>
-      {/* Gradient Header */}
+      
       <div className={`bg-gradient-to-r ${classItem.color} h-24 relative overflow-hidden`}>
         <div className="absolute inset-0 bg-black/10" />
       </div>
 
-      {/* Content */}
       <div className="p-6 space-y-4">
-        {/* Class Info */}
+        
         <div>
           <div className="flex items-start justify-between mb-1">
             <div>
@@ -51,7 +50,6 @@ export default function ClassCard({ class: classItem, delay, onManageStudents, o
           </div>
         </div>
 
-        {/* Stats */}
         <div className="space-y-3 pt-4 border-t border-border">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -84,7 +82,6 @@ export default function ClassCard({ class: classItem, delay, onManageStudents, o
           </div>
         </div>
 
-        {/* Student List Preview */}
         {classItem.students.length > 0 && (
           <div className="pt-4 border-t border-border">
             <p className="text-xs text-muted-foreground mb-2">Student IDs</p>

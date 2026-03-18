@@ -1,16 +1,44 @@
 import { store } from "@workspace/utils/store/zustand";
 import { useShallow } from "zustand/shallow"
 import { useState } from "react";
+import { useNavigate } from "react-router";
 
 export function SignUp() {
 
+    const navigate = useNavigate();
+    const [fullName, setFullName] = useState("");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPass, setConfirmPass] = useState("");
     const { role, setRole, setSignIn } = store(useShallow((s) => ({
         setSignIn: s.setSignIn,
         role: s.role,
         setRole: s.setRole
     })))
 
-    
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (confirmPass !== password) return null;
+
+        const res = await fetch("http://localhost:3000/api/user/signup", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name: fullName,
+                username,
+                password: confirmPass,
+                role
+            })
+        })
+
+        const data = await res.json();
+        
+        localStorage.setItem("token", data.data);
+        navigate("/student-dashboard");
+    }
 
     return (
         <div className="min-h-screen bg-linear-to-br from-slate-200 via-slate-300 to-blue-300 flex items-center justify-center px-4 py-4">
@@ -26,7 +54,9 @@ export function SignUp() {
                     </p>
                 </div>
 
-                <form className="space-y-4">
+                <form
+                    onSubmit={handleSubmit}
+                    className="space-y-4">
 
                     <div className="space-y-2">
                         <label className="text-sm block">
@@ -34,6 +64,7 @@ export function SignUp() {
                         </label>
 
                         <input
+                            onChange={(e) => setFullName(e.target.value)}
                             type="text"
                             className="w-full border px-3 py-2 border-gray-200 rounded-md bg-[#F6F8FF] text-gray-500 text-sm focus:outline focus:ring-2 focus:ring-blue-500"
                         />
@@ -48,16 +79,16 @@ export function SignUp() {
 
                             <button
                                 type="button"
-                                onClick={() => setRole("student")}
-                                className={`${role === "student" ? 'border-2 border-blue-600' : 'border border-gray-200 '} py-3 rounded-xl bg-[#F6F8FF] cursor-pointer`}
+                                onClick={() => setRole("STUDENT")}
+                                className={`${role === "STUDENT" ? 'border-2 border-blue-600' : 'border border-gray-200 '} py-3 rounded-xl bg-[#F6F8FF] cursor-pointer`}
                             >
                                 Student
                             </button>
 
                             <button
                                 type="button"
-                                onClick={() => setRole("teacher")}
-                                className={`${role === "teacher" ? 'border-2 border-blue-600' : 'border border-gray-200 '} py-3 rounded-xl bg-[#F6F8FF] cursor-pointer`}
+                                onClick={() => setRole("TEACHER")}
+                                className={`${role === "TEACHER" ? 'border-2 border-blue-600' : 'border border-gray-200 '} py-3 rounded-xl bg-[#F6F8FF] cursor-pointer`}
                             >
                                 Teacher
                             </button>
@@ -71,6 +102,7 @@ export function SignUp() {
                         </label>
 
                         <input
+                            onChange={(e) => setUsername(e.target.value)}
                             type="text"
                             className="w-full border px-3 py-2 border-gray-200 rounded-md bg-[#F6F8FF] text-gray-500 text-sm focus:outline focus:ring-2 focus:ring-blue-500"
                         />
@@ -83,6 +115,7 @@ export function SignUp() {
                         </label>
 
                         <input
+                            onChange={(e) => setPassword(e.target.value)}
                             type="password"
                             className="w-full border px-3 py-2 border-gray-200 rounded-md bg-[#F6F8FF] text-gray-500 text-sm focus:outline focus:ring-2 focus:ring-blue-500"
                         />
@@ -95,6 +128,7 @@ export function SignUp() {
                         </label>
 
                         <input
+                            onChange={(e) => setConfirmPass(e.target.value)}
                             type="password"
                             className="w-full border px-3 py-2 border-gray-200 rounded-md bg-[#F6F8FF] text-gray-500 text-sm focus:outline focus:ring-2 focus:ring-blue-500"
                         />

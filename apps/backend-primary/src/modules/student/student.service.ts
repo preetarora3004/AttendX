@@ -26,6 +26,16 @@ export class StudentService {
         return attendance;
     }
 
+    async getTimeTableByUserId(userId: string) {
+        const timeTable = await this.repo.getTimeTableByUserId(userId);
+
+        if(!timeTable) {
+            throw new Error("TimeTable not exists")
+        }
+
+        return timeTable;
+    }
+
     async getStudent(userId: string) {
         const student = await this.repo.getStudentByUserId(userId);
 

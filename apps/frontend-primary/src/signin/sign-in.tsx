@@ -6,7 +6,7 @@ export function SignIn() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleSubmit = async(e : React.FormEvent<HTMLFormElement>)=> {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
 
         const res = await fetch("api/signin", {
@@ -14,7 +14,7 @@ export function SignIn() {
             headers: {
                 "Content-Type": "application/json"
             },
-            body : JSON.stringify({
+            body: JSON.stringify({
                 username,
                 password
             })
@@ -22,6 +22,8 @@ export function SignIn() {
 
         const data = await res.json();
         console.log(data);
+
+        localStorage.setItem("token", data.data)
     }
 
     const setSignIn = store((s) => s.setSignIn)
@@ -47,7 +49,7 @@ export function SignIn() {
                         </label>
 
                         <input
-                            onChange={(e)=>{setUsername(e.target.inputMode)}}
+                            onChange={(e) => { setUsername(e.target.inputMode) }}
                             placeholder="you@example.com"
                             type="text"
                             className="w-full border px-3 py-2 border-gray-200 rounded-md bg-[#F6F8FF] text-gray-500 text-sm focus:outline focus:ring-2 focus:ring-blue-500"
@@ -61,7 +63,7 @@ export function SignIn() {
                         </label>
 
                         <input
-                            onChange = {(e)=>setPassword(e.target.value)}
+                            onChange={(e) => setPassword(e.target.value)}
                             placeholder="****"
                             type="password"
                             className="w-full border px-3 py-2 border-gray-200 rounded-md bg-[#F6F8FF] text-gray-500 text-sm focus:outline focus:ring-2 focus:ring-blue-500"
@@ -80,7 +82,7 @@ export function SignIn() {
                             Don't have an account?
                         </label>
                         <button
-                            onClick={()=> setSignIn(false)}
+                            onClick={() => setSignIn(false)}
                             type="button"
                             className="text-sm text-blue-600 font-medium cursor-pointer">
                             Sign Up

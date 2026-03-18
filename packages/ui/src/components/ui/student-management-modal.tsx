@@ -46,12 +46,11 @@ export default function StudentManagementModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
+
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
 
-      {/* Modal */}
       <div className="relative bg-card border border-border rounded-2xl shadow-2xl max-w-lg w-full max-h-96 flex flex-col animate-slide-up">
-        {/* Header */}
+        
         <div className="bg-gradient-to-r from-primary to-primary/60 p-6 flex items-center justify-between flex-shrink-0">
           <div>
             <h2 className="text-xl font-bold text-primary-foreground">{classItem.name}</h2>
@@ -65,9 +64,8 @@ export default function StudentManagementModal({
           </button>
         </div>
 
-        {/* Content */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
-          {/* Add Student Section */}
+
           <div className="space-y-3">
             <h3 className="font-semibold text-foreground">Add Student</h3>
             <div className="flex gap-2">
@@ -115,7 +113,6 @@ export default function StudentManagementModal({
             )}
           </div>
 
-          {/* Enrolled Students */}
           <div className="space-y-3">
             <h3 className="font-semibold text-foreground">
               Enrolled Students ({classItem.students.length})
@@ -145,8 +142,7 @@ export default function StudentManagementModal({
             )}
           </div>
         </div>
-
-        {/* Footer */}
+        
         <div className="border-t border-border p-6 flex-shrink-0">
           <button
             onClick={onClose}

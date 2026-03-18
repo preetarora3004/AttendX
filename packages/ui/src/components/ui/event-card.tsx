@@ -49,12 +49,10 @@ export default function EventCard({ event, delay, onDelete }: EventCardProps) {
         </div>
       </div>
 
-      {/* Content */}
       <div className="p-6 space-y-4">
-        {/* Description */}
+
         <p className="text-sm text-muted-foreground">{event.description}</p>
 
-        {/* Date & Time */}
         <div className="space-y-3 pt-4 border-t border-border">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -77,7 +75,6 @@ export default function EventCard({ event, delay, onDelete }: EventCardProps) {
           </div>
         </div>
 
-        {/* Status Badge */}
         <div className="pt-4">
           <span className={`px-3 py-1 rounded-full text-xs font-semibold ${config.bg} ${config.text}`}>
             Scheduled

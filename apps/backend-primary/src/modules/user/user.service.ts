@@ -38,6 +38,7 @@ export class UserService {
         return {
             id: user.id,
             username: user.username,
+            name: user.name,
             role: user.role
         }
     }

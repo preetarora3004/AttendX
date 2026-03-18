@@ -34,26 +34,24 @@ export default function LectureCard({ lecture, classItem, delay, onDelete }: Lec
 
     return (
         <div className={`bg-card border border-border rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-500 ${animationDelay}`}>
-            {/* Header with Gradient */}
-            <div className="bg-gradient-to-r from-primary to-primary/60 p-6 relative overflow-hidden">
+        
+            <div className="bg-linear-to-r from-blue-500 to-blue-600  p-6 relative overflow-hidden">
                 <div className="absolute inset-0 bg-black/5" />
                 <div className="relative z-10">
-                    <p className="text-primary-foreground/80 text-xs font-semibold uppercase tracking-wider">
+                    <p className="text-white text-xs font-semibold uppercase tracking-wider">
                         {classItem?.code || 'Lecture'}
                     </p>
                     <h3 className="text-xl font-bold text-primary-foreground mt-1">{classItem?.name || 'Unknown Class'}</h3>
                 </div>
             </div>
 
-            {/* Content */}
             <div className="p-6 space-y-4">
-                {/* Lecture ID */}
-                <div className="bg-muted rounded-xl p-4">
+    
+                <div className="bg-gray-500 rounded-xl p-4">
                     <p className="text-xs text-muted-foreground mb-1">Lecture ID</p>
                     <p className="font-mono font-bold text-foreground text-lg">{lecture.lectureId}</p>
                 </div>
 
-                {/* QR Code Section */}
                 <div className="border-2 border-dashed border-border rounded-xl p-4 flex flex-col items-center justify-center min-h-48">
                     {showQR ? (
                         <div className="space-y-4 w-full flex flex-col items-center">
@@ -90,7 +88,6 @@ export default function LectureCard({ lecture, classItem, delay, onDelete }: Lec
                     )}
                 </div>
 
-                {/* Stats */}
                 <div className="grid grid-cols-2 gap-3 pt-4 border-t border-border">
                     <div className="bg-muted rounded-lg p-3">
                         <p className="text-xs text-muted-foreground mb-1">Date</p>
@@ -117,7 +114,6 @@ export default function LectureCard({ lecture, classItem, delay, onDelete }: Lec
                     </div>
                 </div>
 
-                {/* Delete Button */}
                 <button
                     onClick={() => onDelete(lecture.id)}
                     className="w-full px-4 py-2 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors flex items-center justify-center gap-2 font-medium"

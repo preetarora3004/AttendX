@@ -24,7 +24,7 @@ export async function authorizeRole(
                 error: "Unauthorized access"
             })
         }
-        (req as any).user = decoded
+        req.user = decoded
         next();
     }
     catch (err) {

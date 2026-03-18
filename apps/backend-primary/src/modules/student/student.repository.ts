@@ -29,13 +29,25 @@ export class StudentRepository {
         return client.student.findUnique({
             where: {
                 userId
+            }
+        })
+    }
+
+    async getTimeTableByUserId(userId: string) {
+        return client.student.findUnique({
+            where: {
+                userId
             },
-            select: {
-                id: true,
-                class: true,
-                course: true,
-                rollNum: true,
-                createdAt: true
+            include: {
+                class: {
+                    include: {
+                        timetable: {
+                            include : {
+                                subject: true
+                            }
+                        }
+                    }
+                },
             }
         })
     }

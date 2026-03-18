@@ -44,12 +44,11 @@ export default function CreateLectureModal({ isOpen, onClose, onSubmit, classes 
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            {/* Backdrop */}
+            
             <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
 
-            {/* Modal */}
             <div className="relative bg-card border border-border rounded-2xl shadow-2xl max-w-md w-full animate-slide-up">
-                {/* Header */}
+            
                 <div className="bg-gradient-to-r from-primary to-primary/60 p-6 flex items-center justify-between">
                     <h2 className="text-xl font-bold text-primary-foreground">Create New Lecture</h2>
                     <button
@@ -60,9 +59,8 @@ export default function CreateLectureModal({ isOpen, onClose, onSubmit, classes 
                     </button>
                 </div>
 
-                {/* Form */}
                 <form onSubmit={handleSubmit} className="p-6 space-y-4">
-                    {/* Class Selection */}
+
                     <div>
                         <label className="block text-sm font-semibold text-foreground mb-2">Select Class</label>
                         <select
@@ -78,7 +76,6 @@ export default function CreateLectureModal({ isOpen, onClose, onSubmit, classes 
                         </select>
                     </div>
 
-                    {/* Lecture ID */}
                     <div>
                         <div className="flex items-center justify-between mb-2">
                             <label className="block text-sm font-semibold text-foreground">Lecture ID</label>
@@ -100,7 +97,6 @@ export default function CreateLectureModal({ isOpen, onClose, onSubmit, classes 
                         />
                     </div>
 
-                    {/* Date */}
                     <div>
                         <label className="block text-sm font-semibold text-foreground mb-2">Date</label>
                         <input
@@ -111,7 +107,6 @@ export default function CreateLectureModal({ isOpen, onClose, onSubmit, classes 
                         />
                     </div>
 
-                    {/* Time */}
                     <div>
                         <label className="block text-sm font-semibold text-foreground mb-2">Time</label>
                         <input
@@ -122,14 +117,12 @@ export default function CreateLectureModal({ isOpen, onClose, onSubmit, classes 
                         />
                     </div>
 
-                    {/* Info */}
                     <div className="bg-primary/5 border border-primary/20 rounded-lg p-3">
                         <p className="text-xs text-primary font-medium">
                             ✓ QR code will be automatically generated when you create the lecture
                         </p>
                     </div>
 
-                    {/* Buttons */}
                     <div className="flex gap-3 pt-4">
                         <button
                             type="button"

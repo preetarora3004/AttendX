@@ -27,6 +27,21 @@ export class StudentController {
         }
     }
 
+    async getTimeTableByUserId(req: Request, res: Response, next: NextFunction) {
+        try{
+            const userId = req.user!.id;
+            const timeTable = await service.getTimeTableByUserId(userId);
+
+            return res.status(200).json({
+                success: true,
+                data: timeTable
+            })   
+        }
+        catch(err){
+            next(err);
+        }
+    }
+
     async getAttendance(req: Request, res: Response, next: NextFunction) {
         try {
             const payload = {
@@ -57,7 +72,7 @@ export class StudentController {
 
     async getStudent(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = (req as any).user.id;
+            const userId = req.user!.id;
             const student = await service.getStudent(userId);
 
             return res.status(200).json({
@@ -115,7 +130,7 @@ export class StudentController {
     async joinEvent(req: Request, res: Response, next: NextFunction) {
         try {
             const payload = {
-                userId: (req as any).user.id as string,
+                userId: req.user!.id as string,
                 eventId: req.params.eventId
             }
             const parsed = joinEventSchema.safeParse(payload);
