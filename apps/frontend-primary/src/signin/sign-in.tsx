@@ -1,15 +1,17 @@
 import { store } from "@workspace/utils/store/zustand"
 import { useState } from "react";
+import { useNavigate } from "react-router";
 
 export function SignIn() {
 
+    const navigate = useNavigate();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
 
-        const res = await fetch("api/signin", {
+        const res = await fetch("http://localhost:3000/api/user/signin", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -24,6 +26,7 @@ export function SignIn() {
         console.log(data);
 
         localStorage.setItem("token", data.data)
+        navigate("/student-dashboard")
     }
 
     const setSignIn = store((s) => s.setSignIn)
@@ -31,7 +34,7 @@ export function SignIn() {
     return (
         <div className="min-h-screen bg-linear-to-br from-slate-200 via-slate-300 to-blue-300 flex items-center justify-center px-4 py-4">
 
-            <div className="w-full max-w-md p-8 rounded-xl space-y-5 bg-white">
+            <div className="w-full max-w-md p-8 rounded-xl space-y-5 bg-white animate-slide-up">
 
                 <div className="py-1">
                     <h1 className="text-3xl font-semibold">
@@ -42,14 +45,16 @@ export function SignIn() {
                     </p>
                 </div>
 
-                <form className="space-y-4">
+                <form
+                    onSubmit={handleSubmit}
+                    className="space-y-4">
                     <div className="space-y-2">
                         <label className="text-sm block">
                             Email Address
                         </label>
 
                         <input
-                            onChange={(e) => { setUsername(e.target.inputMode) }}
+                            onChange={(e) => setUsername(e.target.value)}
                             placeholder="you@example.com"
                             type="text"
                             className="w-full border px-3 py-2 border-gray-200 rounded-md bg-[#F6F8FF] text-gray-500 text-sm focus:outline focus:ring-2 focus:ring-blue-500"
@@ -71,7 +76,6 @@ export function SignIn() {
                     </div>
 
                     <button
-                        onSubmit={handleSubmit}
                         type="submit"
                         className="w-full border border-[#1D6AE4] text-white bg-[#1D6AE4] px-3 py-2 rounded-xl hover:bg-blue-500 cursor-pointer">
                         Sign In

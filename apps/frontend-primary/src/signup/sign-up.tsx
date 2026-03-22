@@ -1,5 +1,5 @@
 import { store } from "@workspace/utils/store/zustand";
-import { useShallow } from "zustand/shallow"
+import { useShallow } from "zustand/shallow";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 
@@ -10,6 +10,7 @@ export function SignUp() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPass, setConfirmPass] = useState("");
+    const [dept, setDept] = useState("");
     const { role, setRole, setSignIn } = store(useShallow((s) => ({
         setSignIn: s.setSignIn,
         role: s.role,
@@ -34,7 +35,19 @@ export function SignUp() {
             })
         })
 
-        const data = await res.json();
+        const data = await res.json();  
+
+        const response = await fetch("http://localhost:3000/api/student/enroll-student", {
+            method : "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "authorization": `Bearer ${data.data}`
+            },
+            body: JSON.stringify({
+               dept,
+               rollNum : Math.random()    
+            })
+        })
         
         localStorage.setItem("token", data.data);
         navigate("/student-dashboard");
@@ -43,7 +56,7 @@ export function SignUp() {
     return (
         <div className="min-h-screen bg-linear-to-br from-slate-200 via-slate-300 to-blue-300 flex items-center justify-center px-4 py-4">
 
-            <div className="w-full max-w-md rounded-xl shadow-lg p-8 space-y-5 bg-white">
+            <div className="w-full max-w-md rounded-xl shadow-lg p-8 space-y-5 bg-white animate-slide-up">
 
                 <div className="py-1">
                     <h1 className="text-3xl font-bold">
@@ -108,6 +121,22 @@ export function SignUp() {
                         />
 
                     </div>
+
+                     {role ? <div className="space-y-2">
+                        <label className="text-sm block">
+                            {role === "STUDENT" ? <label className="text-sm block">
+                                Course
+                            </label> : <label className="text-sm block">Dept</label>} 
+                        </label>
+
+                        <input
+                            onChange={(e) => setDept(e.target.value)}
+                            type="text"
+                            className="w-full border px-3 py-2 border-gray-200 rounded-md bg-[#F6F8FF] text-gray-500 text-sm focus:outline focus:ring-2 focus:ring-blue-500"
+                        />
+
+                    </div> : null}
+
 
                     <div className="space-y-2">
                         <label className="text-sm block">

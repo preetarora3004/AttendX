@@ -67,7 +67,7 @@ export const store = create<authPage>((set) => ({
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
+                "authorization": `Bearer ${token}`
             }
         });
         const data = await res.json();
@@ -97,7 +97,7 @@ export const store = create<authPage>((set) => ({
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
+                "authorization": `Bearer ${token}`
             }
         })
 

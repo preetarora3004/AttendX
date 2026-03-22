@@ -10,21 +10,6 @@ export class StudentRepository {
         return client.student.create({ data })
     }
 
-    async getAttendance(data: {
-        subjectId: string,
-        studentId: string
-    }) {
-        return client.attendance.count({
-            where: {
-                studentId: data.studentId,
-                status: "PRESENT",
-                lecture: {
-                    subjectId: data.subjectId
-                }
-            }
-        })
-    }
-
     async getStudentByUserId(userId: string) {
         return client.student.findUnique({
             where: {
@@ -48,19 +33,6 @@ export class StudentRepository {
                         }
                     }
                 },
-            }
-        })
-    }
-
-    async markAttendanceByLectureId(data: {
-        studentId: string,
-        lectureId: string
-    }) {
-        return client.attendance.create({
-            data: {
-                studentId: data.studentId,
-                lectureId: data.lectureId,
-                status: "PRESENT"
             }
         })
     }

@@ -51,10 +51,12 @@ export class UserService {
             throw new Error("Invalid credentials");
         }
 
-        const isValid = await bcrypt.compare(user?.password, data.password);
+        const isValid = await bcrypt.compare(data.password, user?.password);
+        console.log(isValid);
+        console.log(data.password);
 
         if(!isValid){
-            throw new Error("Invalid credentials");
+            throw new Error("Invalid Password");
         }
 
         return {

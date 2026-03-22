@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import { store } from "@workspace/utils/store/zustand";
 import { useShallow } from "zustand/shallow";
 import QRScanner from "./components/qr-code";
+import { useNavigate } from "react-router";
 
 export function DashBoard() {
 
+    const navigate = useNavigate();
     const [showQRScanner, setShowQRScanner] = useState(false)
     const { student, loadStudent, timeTable, setTimeTable, user, setUser } =
         store(
@@ -19,7 +21,13 @@ export function DashBoard() {
             })),
         );
     const [isLoading, setLoading] = useState(true);
-    const [isAuthenticated, setAuthenticate] = useState(true);
+    const [isAuthenticated, setAuthenticate] = useState(false);
+    const handleSignOut = () => {
+
+        localStorage.removeItem("token")
+        navigate("/auth")
+
+    }
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -28,16 +36,19 @@ export function DashBoard() {
             setLoading(false);
             return;
         }
+        else {
+            setAuthenticate(true);
+        }
 
         async function init(token: string) {
             try {
                 await Promise.all([setUser(token), loadStudent(token)]);
                 setAuthenticate(true);
+                setLoading(false);
             } catch {
                 localStorage.removeItem("token");
-                setAuthenticate(true);
-            } finally {
-                setLoading(false);
+                setAuthenticate(false);
+                setLoading(true);
             }
         }
 
@@ -61,6 +72,7 @@ export function DashBoard() {
     }
 
     const enrolledClasses = [
+
         {
             id: "CS101",
             name: "Data Structures",
@@ -141,7 +153,10 @@ export function DashBoard() {
                         </div>
                     </div>
 
-                    <button className="flex items-center gap-2 px-4 py-2 text-gray-500 hover:text-gray-700 hover:bg-[#dadee5] rounded-lg transition-all duration-300 cursor-pointer">
+                    <button
+                        type="submit"
+                        onSubmit={handleSignOut}
+                        className="flex items-center gap-2 px-4 py-2 text-gray-500 hover:text-gray-700 hover:bg-[#dadee5] rounded-lg transition-all duration-300 cursor-pointer">
                         <LogOut className="w-4 h-4" />
                         <span className="text-sm">Sign Out</span>
                     </button>
@@ -163,7 +178,7 @@ export function DashBoard() {
                                     <div className="flex gap-6 text-sm">
                                         <div>
                                             <p className="text-gray-500">Student Id</p>
-                                            <p className="text-sm font-medium">{student?.id}</p>
+                                            <p className="text-sm font-medium">{student?.rollNum}</p>
                                         </div>
 
                                         <div>

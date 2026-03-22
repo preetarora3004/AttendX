@@ -11,13 +11,11 @@ export class UserRepository {
     }
 
     async findByCredentials(data: {
-        username: string,
-        password: string
+        username: string
     }) {
         return client.user.findFirst({
             where: {
-                username: data.username,
-                password: data.password
+                username: data.username
             }
         })
     }

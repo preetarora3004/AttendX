@@ -1,13 +1,20 @@
 import { Request, Response, NextFunction } from "express";
 import { StudentService } from "@workspace/backend/modules/student/student.service";
-import { studentSchema, viewAttendanceSchema, markAttendanceSchema, joinEventSchema } from "@workspace/backend/modules/student/student.validator";
+import { studentSchema, joinEventSchema } from "@workspace/backend/modules/student/student.validator";
 
 const service = new StudentService();
 
 export class StudentController {
     async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const parsed = studentSchema.safeParse(req.body);
+            const userId = req.user!.id;
+            const payload = {
+                ...req.body,
+                course: req.body.dept,
+                userId
+            }
+
+            const parsed = studentSchema.safeParse(payload);
 
             if (!parsed.success) {
                 return res.status(400).json({
@@ -28,47 +35,20 @@ export class StudentController {
     }
 
     async getTimeTableByUserId(req: Request, res: Response, next: NextFunction) {
-        try{
+        try {
             const userId = req.user!.id;
             const timeTable = await service.getTimeTableByUserId(userId);
 
             return res.status(200).json({
                 success: true,
                 data: timeTable
-            })   
-        }
-        catch(err){
-            next(err);
-        }
-    }
-
-    async getAttendance(req: Request, res: Response, next: NextFunction) {
-        try {
-            const payload = {
-                studentId: req.params.studentId,
-                subjectId: req.params.subjectId
-            }
-
-            const parsed = viewAttendanceSchema.safeParse(payload);
-
-            if (!parsed.success) {
-                return res.status(400).json({
-                    success: false,
-                    error: "Invalid schema"
-                })
-            }
-
-            const attendance = await service.viewAttendance(parsed.data);
-
-            return res.status(200).json({
-                success: true,
-                data: attendance
             })
         }
         catch (err) {
             next(err);
         }
     }
+
 
     async getStudent(req: Request, res: Response, next: NextFunction) {
         try {
@@ -78,33 +58,6 @@ export class StudentController {
             return res.status(200).json({
                 success: true,
                 data: student
-            })
-        }
-        catch (err) {
-            next(err);
-        }
-    }
-
-    async markAttendance(req: Request, res: Response, next: NextFunction) {
-        try {
-            const payload = {
-                studentId: req.params.studentId,
-                lectureId: req.params.lectureId
-            }
-
-            const parsed = markAttendanceSchema.safeParse(payload);
-
-            if (!parsed.success) {
-                return res.status(400).json({
-                    success: false,
-                    error: "Invalid schema"
-                })
-            }
-
-            const markPresent = await service.markAttendanceByStudent(parsed.data);
-
-            return res.status(200).json({
-                success: true
             })
         }
         catch (err) {

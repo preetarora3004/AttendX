@@ -1,6 +1,6 @@
 import { StudentRepository } from "@workspace/backend/modules/student/student.repository";
 import {
-    CreateStudentDTO, GetAttendance, AttendanceMarkSchema,
+    CreateStudentDTO,
     JoinEventSchema
 } from "@workspace/backend/modules/student/student.types";
 
@@ -8,6 +8,12 @@ export class StudentService {
     private repo = new StudentRepository();
 
     async createStudent(data: CreateStudentDTO) {
+        // const isStudent = await this.getStudent(data.userId);
+
+        // if(isStudent) {
+        //     throw new Error("Student Exists");
+        // }
+
         const student = await this.repo.createStudent(data);
 
         if (!student) {
@@ -15,15 +21,6 @@ export class StudentService {
         }
 
         return student;
-    }
-
-    async viewAttendance(data: GetAttendance) {
-        const attendance = await this.repo.getAttendance(data);
-
-        if (attendance === 0) {
-            throw new Error("No preview available")
-        }
-        return attendance;
     }
 
     async getTimeTableByUserId(userId: string) {
@@ -43,15 +40,6 @@ export class StudentService {
             throw new Error("Student not exists")
         }
         return student;
-    }
-
-    async markAttendanceByStudent(data: AttendanceMarkSchema) {
-        const attendance = await this.repo.markAttendanceByLectureId(data);
-
-        if (!(attendance.status === "PRESENT")) {
-            throw new Error("Invalid lecture")
-        }
-        return true
     }
 
     async getTimeTable(name: string) {
