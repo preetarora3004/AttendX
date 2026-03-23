@@ -15,6 +15,7 @@
     "moduleResolution": "bundler",
     "esModuleInterop": true,
     "allowImportingTsExtensions": true,
+    "allowJs": true,
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
