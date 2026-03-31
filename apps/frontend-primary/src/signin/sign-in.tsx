@@ -23,10 +23,9 @@ export function SignIn() {
         })
 
         const data = await res.json();
-        console.log(data);
 
         localStorage.setItem("token", data.data)
-        navigate("/student-dashboard")
+        data.user.role === "TEACHER" ? navigate("/teacher-dashboard") : navigate("/student-dashboard")
     }
 
     const setSignIn = store((s) => s.setSignIn)

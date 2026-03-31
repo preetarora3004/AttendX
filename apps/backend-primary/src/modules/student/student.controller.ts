@@ -34,20 +34,7 @@ export class StudentController {
         }
     }
 
-    async getTimeTableByUserId(req: Request, res: Response, next: NextFunction) {
-        try {
-            const userId = req.user!.id;
-            const timeTable = await service.getTimeTableByUserId(userId);
 
-            return res.status(200).json({
-                success: true,
-                data: timeTable
-            })
-        }
-        catch (err) {
-            next(err);
-        }
-    }
 
 
     async getStudent(req: Request, res: Response, next: NextFunction) {
@@ -65,20 +52,6 @@ export class StudentController {
         }
     }
 
-    async getTimeTable(req: Request, res: Response, next: NextFunction) {
-        try {
-            const name = req.body;
-            const timeTable = await service.getTimeTable(name);
-
-            return res.status(200).json({
-                success: true,
-                data: timeTable
-            })
-        }
-        catch (err) {
-            next(err);
-        }
-    }
 
     async joinEvent(req: Request, res: Response, next: NextFunction) {
         try {

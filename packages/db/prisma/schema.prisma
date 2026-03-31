@@ -17,6 +17,14 @@ enum AttendanceStatus {
   LATE
 }
 
+enum Day {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+}
+
 model User {
   id        String   @id @default(cuid())
   username  String   @unique
@@ -44,22 +52,26 @@ model Student {
   eventId String?
   event   Event?  @relation(fields: [eventId], references: [id], onDelete: SetNull)
 
-  attendance      Attendance[]
-  eventAttendance EventAttendance[]
+  attendance       Attendance[]
+  eventAttendance  EventAttendance[]
+  enrolledSubjects EnrolledSubject[]
 
   createdAt DateTime @default(now())
 }
 
 model Teacher {
-  id        String @id @default(cuid())
-  teacherId Int    @unique
-  dept      String
+  id            String @id @default(cuid())
+  teacherId     Int    @unique
+  dept          String
+  qualification String
+  office        String
 
   userId String @unique
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   subjects Subject[]
   classes  Class[]
+  periods  Period[]
 
   createdAt DateTime @default(now())
 }
@@ -72,10 +84,20 @@ model Class {
   teacherId String
   teacher   Teacher @relation(fields: [teacherId], references: [id], onDelete: Restrict)
 
-  students  Student[]
-  timetable ClassTimetable[]
+  students        Student[]
+  weeklyTimeTable WeeklyTimeTable[]
 
   createdAt DateTime @default(now())
+}
+
+model EnrolledSubject {
+  id String @id @default(cuid())
+
+  subjectId String
+  subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
 }
 
 model Subject {
@@ -86,8 +108,9 @@ model Subject {
   teacherId String
   teacher   Teacher @relation(fields: [teacherId], references: [id], onDelete: Restrict)
 
-  lectures       Lecture[]
-  classTimeTable ClassTimetable[]
+  lectures         Lecture[]
+  periods          Period[]
+  enrolledSubjects EnrolledSubject[]
 
   @@unique([name, courseCode])
 }
@@ -101,6 +124,7 @@ model Lecture {
   date DateTime @default(now())
 
   attendance Attendance[]
+
   @@index([subjectId])
 }
 
@@ -144,15 +168,27 @@ model EventAttendance {
   @@index([eventId])
 }
 
-model ClassTimetable {
-  id        String   @id @default(cuid())
-  day       String
-  startTime DateTime
-  endTime   DateTime
+model WeeklyTimeTable {
+  id  String @id @default(cuid())
+  day Day
 
   classId String
   class   Class  @relation(fields: [classId], references: [id], onDelete: Cascade)
 
+  periods Period[]
+}
+
+model Period {
+  id String @id @default(cuid())
+
   subjectId String
   subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  teacherId String
+  teacher   Teacher @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+
+  weeklyTimeTableId String
+  weeklyTimeTable   WeeklyTimeTable @relation(fields: [weeklyTimeTableId], references: [id], onDelete: Cascade)
+
+  startTime DateTime
 }

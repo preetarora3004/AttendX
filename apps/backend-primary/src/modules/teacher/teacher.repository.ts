@@ -2,9 +2,23 @@ import { client } from "@workspace/db/index"
 
 export class TeacherRepository {
 
-    async getTeacherByUserId (userId: string) {
+    async createTeacher(data: {
+        userId: string,
+        teacherId: number,
+        dept: string,
+        qualification: string,
+        officeRoom: string
+    }) {
+        return client.teacher.create({ data })
+    }
+
+    async getTeacherByUserId(userId: string) {
         return client.teacher.findUnique({
-            where: {userId}
+            where: { userId },
+            include: {
+                subjects: true,
+                classes: true
+            }
         })
     }
 

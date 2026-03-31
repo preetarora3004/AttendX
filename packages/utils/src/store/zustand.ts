@@ -1,5 +1,33 @@
 import { create } from 'zustand'
 
+type Period = {
+  id: string;
+  subject: {
+    id: string;
+    name: string;
+  };
+  startTime: string;
+  teacher: {
+    user: {
+      name: string;
+    };
+  };
+};
+
+type TimetableItem = {
+  id: string;
+  day: string;
+  periods: Period[];
+};
+
+type EnrollSubject = {
+    subject: {
+        id: string
+        name: string,
+        courseCode: string
+    }
+}
+
 type authPage = {
     SignIn: boolean,
     setSignIn: (value: boolean) => void
@@ -18,20 +46,26 @@ type authPage = {
     student: {
         id: string
         rollNum: string,
-        class: string,
         createdAt: Date,
-        course: string
+        course: string,
+        enrolledSubjects : Array<EnrollSubject> | null 
     } | null
 
-    setStudent: (token: string) => Promise<void>
+    enrollSubjects : Array<EnrollSubject> | null
 
-    timeTable: Array<string> | null,
-    setTimeTable: (token: string) => Promise<void>
+    class: {
+        name: string
+    } | null
+
+    timeTable: Array<TimetableItem> | null,
 
     teacher: {
         id: string,
         teacherId: number,
         dept: string,
+        office: string,
+        createdAt: Date,
+        qualification: string
         subjects: Array<object>
         classes: Array<object>
     } | null
@@ -44,8 +78,13 @@ export const store = create<authPage>((set) => ({
     setSignIn: (value: boolean) => set({ SignIn: value }),
 
     user: null,
+    timeTable: null,
+    class: null,
+    student: null,
+    enrollSubjects: null,
+
     setUser: async (token: string) => {
-        const res = await fetch("http://localhost:3000/api/user", {
+        const res = await fetch("http://localhost:3000/api/student-dashboard", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -54,42 +93,17 @@ export const store = create<authPage>((set) => ({
         })
 
         const data = await res.json();
-        set({ user: data.data })
+        console.log(data.data.user.student.enrolledSubjects);
+        set({ user: data.data.user })
+        set({ enrollSubjects : data.data.user.student.enrolledSubjects })
+        set({ timeTable: data.data.user.student.class.weeklyTimeTable })
+        set({ class: data.data.user.student.class })
+        set({ student: data.data.user.student })
     },
 
     role: null,
     setRole: (value: "TEACHER" | "STUDENT") => set({ role: value }),
 
-    student: null,
-    setStudent: async (token: string) => {
-
-        const res = await fetch("http://localhost:3000/api/student/get-student", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "authorization": `Bearer ${token}`
-            }
-        });
-        const data = await res.json();
-
-        set({ student: data.data });
-    },
-
-    timeTable: null,
-    setTimeTable: async (token: string) => {
-
-        const res = await fetch("http://localhost:3000/api/student/timeTable", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "authorization": `Bearer ${token}`
-            }
-        })
-
-        const data = await res.json();
-
-        set({ timeTable: data.data.class.timeTable })
-    },
 
     teacher: null,
     setTeacher: async (token: string) => {

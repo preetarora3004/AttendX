@@ -1,142 +1,42 @@
 import { LogOutIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import react from '../assets/react.svg'
-import { Mail, Phone, MapPin, BookOpen, Clock, Award, Users2, Calendar, Plus } from "lucide-react";
+import { Mail, MapPin, BookOpen, Clock, Award, Users2, Calendar, Plus } from "lucide-react";
 import LectureCard from "./components/lecture-card"
 import ClassCard from "./components/class.card";
-import { Teacher, Class, Lecture, Event } from "./types/teacher.types";
 import EventCard from './components/event.card'
 import CreateClassModal from './components/create.class.modal'
 import CreateLectureModal from './components/create.lecture.modal'
 import CreateEventModal from './components/create.event.modal'
 import StudentManagementModal from './components/student.management.modal'
+import { store } from "@workspace/utils/store/zustand";
+import { useShallow } from "zustand/shallow";
 
 export default function TeacherDashboard() {
 
+    const { teacher, setTeacher, user, loadUser } = store(useShallow((s) => ({
+        teacher: s.teacher,
+        setTeacher: s.setTeacher,
+        user: s.user,
+        loadUser: s.setUser
+    })))
     const [activeTab, setActiveTab] = useState<'overview' | 'classes' | 'lectures' | 'events'>('overview')
-
-    const [teacher] = useState<Teacher>({
-        id: 'T001',
-        name: 'Prof Nobita',
-        email: 'nobita@krmu.edu.in',
-        phone: '+91 xxx-xxx-xxxx',
-        department: 'Computer Science',
-        subject: 'Web Development & Data Structures',
-        joinDate: 'August 2026',
-        officeRoom: 'Building A, Room 301'
-    })
-
-    const [classes, setClasses] = useState<Class[]>([
-        {
-            id: '1',
-            name: 'Web Development',
-            code: 'CS101',
-            students: ['S001', 'S002', 'S003', 'S004', 'S005'],
-            schedule: 'Mon & Wed 10:00 AM',
-            room: 'Lab 301',
-            color: 'from-blue-500 to-cyan-500',
-        },
-        {
-            id: '2',
-            name: 'Data Structures',
-            code: 'CS102',
-            students: ['S001', 'S003', 'S006', 'S007'],
-            schedule: 'Tue & Thu 2:00 PM',
-            room: 'Lab 302',
-            color: 'from-purple-500 to-pink-500',
-        },
-    ])
-
-    const [lectures, setLectures] = useState<Lecture[]>([
-        {
-            id: '1',
-            classId: '1',
-            lectureId: 'LEC-2024-001',
-            qrCode: 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=LEC-2024-001',
-            date: '2024-03-12',
-            time: '10:00 AM',
-            attendance: 4,
-        },
-    ])
-
-    const [events, setEvents] = useState<Event[]>([
-        {
-            id: '1',
-            title: 'Mid-Semester Exam',
-            date: '2024-03-20',
-            time: '10:00 AM',
-            description: 'CS101 Mid-Semester Examination',
-            type: 'exam',
-        },
-    ])
-
     const [isCreateClassOpen, setIsCreateClassOpen] = useState(false)
     const [isCreateLectureOpen, setIsCreateLectureOpen] = useState(false)
     const [isCreateEventOpen, setIsCreateEventOpen] = useState(false)
     const [isStudentManagementOpen, setIsStudentManagementOpen] = useState(false)
-    const [selectedClass, setSelectedClass] = useState<Class | null>(null)
 
-    const handleCreateClass = (classData: Omit<Class, 'id' | 'students'>) => {
-        const newClass: Class = {
-            ...classData,
-            id: Math.random().toString(),
-            students: [],
+    useEffect(() => {
+
+        const token = localStorage.getItem("token")
+        if (!token) return;
+
+        async function init(token: string) {
+            await Promise.all([loadUser(token), setTeacher(token)]);
         }
-        setClasses([...classes, newClass])
-        setIsCreateClassOpen(false)
-    }
 
-    const handleCreateLecture = (lectureData: Omit<Lecture, 'id' | 'qrCode' | 'attendance'>) => {
-        const newLecture: Lecture = {
-            ...lectureData,
-            id: Math.random().toString(),
-            qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${lectureData.lectureId}`,
-            attendance: 0,
-        }
-        setLectures([...lectures, newLecture])
-        setIsCreateLectureOpen(false)
-    }
-
-    const handleCreateEvent = (eventData: Omit<Event, 'id'>) => {
-        const newEvent: Event = {
-            ...eventData,
-            id: Math.random().toString(),
-        }
-        setEvents([...events, newEvent])
-        setIsCreateEventOpen(false)
-    }
-
-    const handleAddStudent = (studentId: string) => {
-        if (selectedClass && !selectedClass.students.includes(studentId)) {
-            const updatedClasses = classes.map((c) =>
-                c.id === selectedClass.id ? { ...c, students: [...c.students, studentId] } : c
-            )
-            setClasses(updatedClasses)
-            setSelectedClass(updatedClasses.find((c) => c.id === selectedClass.id) || null)
-        }
-    }
-
-    const handleRemoveStudent = (studentId: string) => {
-        if (selectedClass) {
-            const updatedClasses = classes.map((c) =>
-                c.id === selectedClass.id ? { ...c, students: c.students.filter((s) => s !== studentId) } : c
-            )
-            setClasses(updatedClasses)
-            setSelectedClass(updatedClasses.find((c) => c.id === selectedClass.id) || null)
-        }
-    }
-
-    const handleDeleteClass = (classId: string) => {
-        setClasses(classes.filter((c) => c.id !== classId))
-    }
-
-    const handleDeleteLecture = (lectureId: string) => {
-        setLectures(lectures.filter((l) => l.id !== lectureId))
-    }
-
-    const handleDeleteEvent = (eventId: string) => {
-        setEvents(events.filter((e) => e.id !== eventId))
-    }
+        init(token);
+    }, []);
 
     return (
         <div className="min-h-screen bg-linear-to-br from-[#f0f5ff] via-[#f0f5ff] to-[#1c69e3]/5">
@@ -188,7 +88,7 @@ export default function TeacherDashboard() {
 
                                 <div className="flex-1">
                                     <div className="mb-6">
-                                        <h2 className="text-3xl font-bold text-foreground mb-2">Prof Nobita</h2>
+                                        <h2 className="text-3xl font-bold text-foreground mb-2">{user?.name}</h2>
                                         <div className="flex flex-wrap gap-3">
                                             <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">Computer Science</span>
                                             <span className="px-3 py-1 bg-secondary/10 text-secondary rounded-full text-sm font-medium">teacher.qualification</span>
@@ -200,23 +100,16 @@ export default function TeacherDashboard() {
                                             <Mail className="w-5 h-5 text-primary flex shrink-0 mt-0.5" />
                                             <div>
                                                 <p className="text-xs text-muted-foreground uppercase tracking-wider">Email</p>
-                                                <p className="text-sm font-medium text-foreground">{teacher.email}</p>
+                                                <p className="text-sm font-medium text-foreground">{user?.username}</p>
                                             </div>
                                         </div>
 
-                                        <div className="flex items-start gap-2">
-                                            <Phone className="w-5 h-5 text-primary flex shrink-0 mt-0.5" />
-                                            <div>
-                                                <p className="text-xs text-muted-foreground uppercase tracking-wider">Phone</p>
-                                                <p className="text-sm font-medium text-foreground">{teacher.phone}</p>
-                                            </div>
-                                        </div>
 
                                         <div className="flex items-start gap-3">
                                             <MapPin className="w-5 h-5 text-primary flex shrink-0 mt-0.5" />
                                             <div>
                                                 <p className="text-xs text-muted-foreground uppercase tracking-wider">Office</p>
-                                                <p className="text-sm font-medium text-foreground">{teacher.officeRoom}</p>
+                                                <p className="text-sm font-medium text-foreground">{teacher?.office}</p>
                                             </div>
                                         </div>
 
@@ -224,14 +117,14 @@ export default function TeacherDashboard() {
                                             <Award className="w-5 h-5 text-primary flex shrink-0 mt-0.5" />
                                             <div>
                                                 <p className="text-xs text-muted-foreground uppercase tracking-wider">Joined</p>
-                                                <p className="text-sm font-medium text-foreground">{teacher.joinDate}</p>
+                                                <p className="text-sm font-medium text-foreground">{new Date(teacher!.createdAt).toDateString()}</p>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div className="mt-6 pt-6 border-t border-border">
                                         <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">Subjects</p>
-                                        <p className="text-foreground">{teacher.subject}</p>
+                                        <p className="text-foreground">{teacher?.subjects}</p>
                                     </div>
                                 </div>
 
@@ -377,7 +270,7 @@ export default function TeacherDashboard() {
                         </div>
                     </div>
                 )}
-                
+
                 {activeTab === 'lectures' && (
                     <div className="space-y-6">
                         <div className="flex items-center justify-between animate-slide-up-delay">

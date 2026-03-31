@@ -23,15 +23,6 @@ export class StudentService {
         return student;
     }
 
-    async getTimeTableByUserId(userId: string) {
-        const timeTable = await this.repo.getTimeTableByUserId(userId);
-
-        if(!timeTable) {
-            throw new Error("TimeTable not exists")
-        }
-
-        return timeTable;
-    }
 
     async getStudent(userId: string) {
         const student = await this.repo.getStudentByUserId(userId);
@@ -40,15 +31,6 @@ export class StudentService {
             throw new Error("Student not exists")
         }
         return student;
-    }
-
-    async getTimeTable(name: string) {
-        const classInfo = await this.repo.getTimeTableByName(name);
-
-        if (!classInfo) {
-            throw new Error("Invalid class name")
-        }
-        return classInfo.timetable;
     }
 
     async joinEvent(data: JoinEventSchema) {

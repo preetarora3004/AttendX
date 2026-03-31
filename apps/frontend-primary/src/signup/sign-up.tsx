@@ -11,6 +11,8 @@ export function SignUp() {
     const [password, setPassword] = useState("");
     const [confirmPass, setConfirmPass] = useState("");
     const [dept, setDept] = useState("");
+    const [qualification, setQualification] = useState("");
+    const [officeRoom, setOffice] = useState("")
     const { role, setRole, setSignIn } = store(useShallow((s) => ({
         setSignIn: s.setSignIn,
         role: s.role,
@@ -35,22 +37,40 @@ export function SignUp() {
             })
         })
 
-        const data = await res.json();  
+        const data = await res.json();
 
-        const response = await fetch("http://localhost:3000/api/student/enroll-student", {
-            method : "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "authorization": `Bearer ${data.data}`
-            },
-            body: JSON.stringify({
-               dept,
-               rollNum : Math.random()    
+        if (role === "STUDENT") {
+            const response = await fetch("http://localhost:3000/api/student/enroll-student", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "authorization": `Bearer ${data.data}`
+                },
+                body: JSON.stringify({
+                    dept,
+                    rollNum: Math.random()
+                })
             })
-        })
-        
+        }
+        else {
+            const response = await fetch("http://localhost:3000/api/teacher/enroll-teacher", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "authorization": `Bearer ${data.data}`
+                },
+                body: JSON.stringify({
+                    qualification,
+                    officeRoom,
+                    teacherId : Math.random(),  
+                    dept,
+                    rollNum: Math.random()
+                })
+            })
+        }
+
         localStorage.setItem("token", data.data);
-        navigate("/student-dashboard");
+        role === "STUDENT" ? navigate("/student-dashboard") : navigate("/teacher-dashboard")
     }
 
     return (
@@ -122,15 +142,45 @@ export function SignUp() {
 
                     </div>
 
-                     {role ? <div className="space-y-2">
+                    {role ? <div className="space-y-2">
                         <label className="text-sm block">
                             {role === "STUDENT" ? <label className="text-sm block">
                                 Course
-                            </label> : <label className="text-sm block">Dept</label>} 
+                            </label> : <label className="text-sm block">Dept</label>}
                         </label>
 
                         <input
                             onChange={(e) => setDept(e.target.value)}
+                            type="text"
+                            className="w-full border px-3 py-2 border-gray-200 rounded-md bg-[#F6F8FF] text-gray-500 text-sm focus:outline focus:ring-2 focus:ring-blue-500"
+                        />
+
+                    </div> : null}
+
+                    {role ? <div className="space-y-2">
+                        <label className="text-sm block">
+                            {role === "TEACHER" ? <label className="text-sm block">
+                                Qualification
+                            </label> : null}
+                        </label>
+
+                        <input
+                            onChange={(e) => setQualification(e.target.value)}
+                            type="text"
+                            className="w-full border px-3 py-2 border-gray-200 rounded-md bg-[#F6F8FF] text-gray-500 text-sm focus:outline focus:ring-2 focus:ring-blue-500"
+                        />
+
+                    </div> : null}
+
+                    {role ? <div className="space-y-2">
+                        <label className="text-sm block">
+                            {role === "TEACHER" ? <label className="text-sm block">
+                                Office
+                            </label> : null}
+                        </label>
+
+                        <input
+                            onChange={(e) => setOffice(e.target.value)}
                             type="text"
                             className="w-full border px-3 py-2 border-gray-200 rounded-md bg-[#F6F8FF] text-gray-500 text-sm focus:outline focus:ring-2 focus:ring-blue-500"
                         />

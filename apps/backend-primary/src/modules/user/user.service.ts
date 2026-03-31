@@ -29,17 +29,14 @@ export class UserService {
 
     async getUser(id: string) {
 
-        const user = await this.repo.findById(id);
+        const user = await this.repo.getStudentDashboard(id);
 
         if (!user) {
             throw new Error("User does not exist");
         }
 
         return {
-            id: user.id,
-            username: user.username,
-            name: user.name,
-            role: user.role
+            user
         }
     }
 

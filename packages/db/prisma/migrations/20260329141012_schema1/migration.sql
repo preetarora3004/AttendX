@@ -4,6 +4,9 @@ CREATE TYPE "Role" AS ENUM ('STUDENT', 'TEACHER');
 -- CreateEnum
 CREATE TYPE "AttendanceStatus" AS ENUM ('PRESENT', 'ABSENT', 'LATE');
 
+-- CreateEnum
+CREATE TYPE "Day" AS ENUM ('MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
@@ -35,6 +38,8 @@ CREATE TABLE "Teacher" (
     "id" TEXT NOT NULL,
     "teacherId" INTEGER NOT NULL,
     "dept" TEXT NOT NULL,
+    "qualification" TEXT NOT NULL,
+    "office" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -50,6 +55,15 @@ CREATE TABLE "Class" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Class_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "EnrolledSubject" (
+    "id" TEXT NOT NULL,
+    "subjectId" TEXT NOT NULL,
+    "studentId" TEXT NOT NULL,
+
+    CONSTRAINT "EnrolledSubject_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -102,15 +116,23 @@ CREATE TABLE "EventAttendance" (
 );
 
 -- CreateTable
-CREATE TABLE "ClassTimetable" (
+CREATE TABLE "WeeklyTimeTable" (
     "id" TEXT NOT NULL,
-    "day" TEXT NOT NULL,
-    "startTime" TIMESTAMP(3) NOT NULL,
-    "endTime" TIMESTAMP(3) NOT NULL,
+    "day" "Day" NOT NULL,
     "classId" TEXT NOT NULL,
-    "subjectId" TEXT NOT NULL,
 
-    CONSTRAINT "ClassTimetable_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "WeeklyTimeTable_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Period" (
+    "id" TEXT NOT NULL,
+    "subjectId" TEXT NOT NULL,
+    "teacherId" TEXT NOT NULL,
+    "weeklyTimeTableId" TEXT NOT NULL,
+    "startTime" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Period_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -165,6 +187,12 @@ ALTER TABLE "Teacher" ADD CONSTRAINT "Teacher_userId_fkey" FOREIGN KEY ("userId"
 ALTER TABLE "Class" ADD CONSTRAINT "Class_teacherId_fkey" FOREIGN KEY ("teacherId") REFERENCES "Teacher"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "EnrolledSubject" ADD CONSTRAINT "EnrolledSubject_subjectId_fkey" FOREIGN KEY ("subjectId") REFERENCES "Subject"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "EnrolledSubject" ADD CONSTRAINT "EnrolledSubject_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "Student"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "Subject" ADD CONSTRAINT "Subject_teacherId_fkey" FOREIGN KEY ("teacherId") REFERENCES "Teacher"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -183,7 +211,13 @@ ALTER TABLE "EventAttendance" ADD CONSTRAINT "EventAttendance_studentId_fkey" FO
 ALTER TABLE "EventAttendance" ADD CONSTRAINT "EventAttendance_eventId_fkey" FOREIGN KEY ("eventId") REFERENCES "Event"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ClassTimetable" ADD CONSTRAINT "ClassTimetable_classId_fkey" FOREIGN KEY ("classId") REFERENCES "Class"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "WeeklyTimeTable" ADD CONSTRAINT "WeeklyTimeTable_classId_fkey" FOREIGN KEY ("classId") REFERENCES "Class"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ClassTimetable" ADD CONSTRAINT "ClassTimetable_subjectId_fkey" FOREIGN KEY ("subjectId") REFERENCES "Subject"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Period" ADD CONSTRAINT "Period_subjectId_fkey" FOREIGN KEY ("subjectId") REFERENCES "Subject"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Period" ADD CONSTRAINT "Period_teacherId_fkey" FOREIGN KEY ("teacherId") REFERENCES "Teacher"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Period" ADD CONSTRAINT "Period_weeklyTimeTableId_fkey" FOREIGN KEY ("weeklyTimeTableId") REFERENCES "WeeklyTimeTable"("id") ON DELETE CASCADE ON UPDATE CASCADE;

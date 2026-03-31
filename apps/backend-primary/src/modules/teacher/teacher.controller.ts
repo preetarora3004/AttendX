@@ -1,10 +1,31 @@
 import { Request, Response, NextFunction } from "express"
 import { TeacherService } from "@workspace/backend/modules/teacher/teacher.service"
-import { validateClassSchema, validateSubjectSchema, validateLectureSchema, validateEventSchema, validateClassTimeTableSchema } from "@workspace/backend/modules/teacher/teacher.validator"
+import { createTeacherValidator, validateClassSchema, validateSubjectSchema, validateLectureSchema, validateEventSchema, validateClassTimeTableSchema } from "@workspace/backend/modules/teacher/teacher.validator"
 
 const service = new TeacherService();
 
 export class TeacherController {
+
+    async createTeacher(req: Request, res: Response, next: NextFunction) {
+        try {
+            const userId = req.user!.id;
+            const parsed = createTeacherValidator.safeParse(req.body);
+
+            if (!parsed.success) {
+                throw new Error("Invalid schema")
+            }
+
+            const teacher = await service.createTeacher(parsed.data)
+
+            return res.status(201).json({
+                success: true,
+                body: teacher
+            })
+        }
+        catch (err) {
+            next(err);
+        }
+    }
 
     async getTeacherById(req: Request, res: Response, next: NextFunction) {
         try {
@@ -16,7 +37,7 @@ export class TeacherController {
                 data: teacher
             })
         }
-        catch(err) {
+        catch (err) {
             next(err);
         }
     }

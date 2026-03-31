@@ -8,6 +8,9 @@
     "check-types": "turbo run check-types",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
+  "prisma": {
+      "seed" : "cd ./packages/db bun run prisma/seed.ts"
+    },
   "devDependencies": {
     "dotenv": "^17.2.3",
     "prettier": "^3.6.0",

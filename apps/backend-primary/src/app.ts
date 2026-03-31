@@ -12,11 +12,11 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use("/api/v1", userRoutes);
-app.use("/api/v1/qr", qrRoutes);
-app.use("/api/v1/student", studentRoutes);
-app.use("/api/v1/teacher", teacherRoutes);
-app.use("api/v1/attendanace", attendanceRouter);
+app.use("/api", userRoutes);
+app.use("/api/qr", qrRoutes);
+app.use("/api/student", studentRoutes);
+app.use("/api/teacher", teacherRoutes);
+app.use("api/attendanace", attendanceRouter);
 
 app.use(errorMiddleware);
 

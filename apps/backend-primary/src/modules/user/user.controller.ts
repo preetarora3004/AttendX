@@ -31,10 +31,9 @@ export class UserController {
         }
     }
 
-    async getById(req: Request, res: Response, next: NextFunction) {
+    async getStudentDashboard(req: Request, res: Response, next: NextFunction) {
 
         const user = await service.getUser(req.user!.id);
-        console.log(user)
         return res.status(201).json({
             success: true,
             data: user
@@ -57,7 +56,8 @@ export class UserController {
 
             return res.status(200).json({
                 success: true,
-                data: token
+                data: token,
+                user: user
             })
         }
         catch (err) {

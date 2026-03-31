@@ -28,9 +28,66 @@ export class UserRepository {
         })
     }
 
-    async findById(userId: string) {
+    async getStudentDashboard(userId: string) {
         return client.user.findUnique({
-            where: { id: userId }
+            where: { id: userId },
+            select: {
+                name: true,
+                username: true,
+                student: {
+                    select: {
+                        id: true,
+                        rollNum: true,
+                        course: true,
+                        enrolledSubjects: {
+                            select : {
+                                subject: {
+                                    select : {
+                                        id: true,
+                                        name: true,
+                                        courseCode: true
+                                    }
+                                }
+                            }
+                        },
+                        createdAt: true,
+                        class: {
+                            select: {
+                                name: true,
+                                weeklyTimeTable: {
+                                    orderBy: { day: "asc" },
+                                    select: {
+                                        id: true,
+                                        day: true,
+                                        periods: {
+                                            select: {
+                                                id: true,
+                                                subject: {
+                                                    select: {
+                                                        id: true,
+                                                        name: true,
+                                                    }
+                                                },
+                                                startTime: true,
+                                                teacher: {
+                                                    select: {
+                                                        id: true,
+                                                        user: {
+                                                            select: {
+                                                                name: true
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         })
     }
 }

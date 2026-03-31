@@ -6,6 +6,7 @@ import { Router } from "express"
 const router = Router();
 const controller = new TeacherController();
 
+router.post("/enroll-teacher", authMiddleware, controller.createTeacher);
 router.get("/get-teacher", authMiddleware, controller.getTeacherById);
 router.post("/class", authorizeRole, controller.createClass);
 router.post("/subject", authorizeRole, controller.createSubject);

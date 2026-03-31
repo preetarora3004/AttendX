@@ -1,5 +1,13 @@
 import { z } from "zod"
 
+export const createTeacherValidator = z.object({
+    userId: z.string(),
+    teacherId: z.number(),
+    dept : z.string(),
+    qualification : z.string(),
+    officeRoom : z.string(),
+})
+
 export const validateQrGeneration = z.object({
     lectureId: z.string(),
 })
