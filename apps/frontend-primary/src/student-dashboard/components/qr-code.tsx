@@ -227,11 +227,9 @@ export default function QRScanner({ onClose }: QRScannerProps) {
       }
 
       setTimeout(() => {
-        setScannedResult(null)
-        setIsScanning(true)
-        setIsMarking(false)
+        onClose()
       }, 2000)
-
+      
       return true
     } catch (err) {
       setError('Failed to mark attendance. Please try again.')
