@@ -16,7 +16,7 @@ app.use("/api", userRoutes);
 app.use("/api/qr", qrRoutes);
 app.use("/api/student", studentRoutes);
 app.use("/api/teacher", teacherRoutes);
-app.use("/api/attendanace", attendanceRouter);
+app.use("/api/attendance", attendanceRouter);
 
 app.use(errorMiddleware);
 

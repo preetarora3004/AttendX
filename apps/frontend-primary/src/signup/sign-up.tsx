@@ -24,7 +24,7 @@ export function SignUp() {
 
         if (confirmPass !== password) return null;
 
-        const res = await fetch("http://localhost:3000/api/user/signup", {
+        const res = await fetch("https://attendx-t48b.onrender.com/api/user/signup", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -40,7 +40,7 @@ export function SignUp() {
         const data = await res.json();
 
         if (role === "STUDENT") {
-            const response = await fetch("http://localhost:3000/api/student/enroll-student", {
+            const response = await fetch("https://attendx-t48b.onrender.com/api/student/enroll-student", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -53,7 +53,7 @@ export function SignUp() {
             })
         }
         else {
-            const response = await fetch("http://localhost:3000/api/teacher/enroll-teacher", {
+            const response = await fetch("https://attendx-t48b.onrender.com/api/teacher/enroll-teacher", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

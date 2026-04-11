@@ -155,7 +155,7 @@ export const store = create<authPage>((set) => ({
     enrollSubjects: null,
 
     setUser: async (token: string) => {
-        const res = await fetch("http://localhost:3000/api/student-dashboard", {
+        const res = await fetch("https://attendx-t48b.onrender.com/api/student-dashboard", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -183,7 +183,7 @@ export const store = create<authPage>((set) => ({
     teacherDash: null,
 
     setTeacher: async (token: string) => {
-        const res = await fetch("http://localhost:3000/api/teacher/get-teacher/dashboard", {
+        const res = await fetch("https://attendx-t48b.onrender.com/api/teacher/get-teacher/dashboard", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

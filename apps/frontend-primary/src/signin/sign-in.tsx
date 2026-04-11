@@ -11,7 +11,7 @@ export function SignIn() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
 
-        const res = await fetch("http://localhost:3000/api/user/signin", {
+        const res = await fetch("https://attendx-t48b.onrender.com/api/user/signin", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

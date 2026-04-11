@@ -6,6 +6,8 @@ import jsQR from 'jsqr'
 import { store } from '@workspace/utils/store/zustand'
 import { useShallow } from 'zustand/shallow'
 
+const BACKEND_URL = 'https://attendx-t48b.onrender.com'
+
 interface QRScannerProps {
   onClose: () => void
 }
@@ -108,13 +110,21 @@ export default function QRScanner({ onClose }: QRScannerProps) {
     setIsVerifying(true)
     setError(null)
 
+    const token = localStorage.getItem('token')
+    if (!token) {
+      setError('Authentication required. Please sign in again.')
+      setIsVerifying(false)
+      setIsScanning(true)
+      return
+    }
+
     try {
       const response = await fetch(
-        `/api/qr/verify/${encodeURIComponent(qrData)}`,
+        `${BACKEND_URL}/api/qr/verify/${encodeURIComponent(qrData)}`,
         {
           method: 'GET',
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
           }
         }
@@ -191,19 +201,29 @@ export default function QRScanner({ onClose }: QRScannerProps) {
     setError(null)
 
     try {
+      const token = localStorage.getItem('token')
+      if (!token) {
+        setError('Authentication required. Please sign in again.')
+        setIsMarking(false)
+        return false
+      }
+
       const response = await fetch(
-        `/api/attendanace/present-class/${finalLectureId}/${student.id}`,
+        `${BACKEND_URL}/api/attendance/present-class/${finalLectureId}/${student.id}`,
         {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
           }
         }
       )
 
       if (!response.ok) {
-        throw new Error('Failed to mark attendance')
+        const errorData = await response.json().catch(() => null)
+        setError(errorData?.message || errorData?.error || 'Failed to mark attendance. Please try again.')
+        setIsMarking(false)
+        return false
       }
 
       setTimeout(() => {

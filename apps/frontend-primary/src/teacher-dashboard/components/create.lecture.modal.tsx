@@ -42,7 +42,7 @@ export default function CreateLectureModal({ isOpen, onClose, onSubmit, subjectI
     setIsGenerating(true)
 
     try {
-      const res = await fetch('http://localhost:3000/api/qrcode/create', {
+      const res = await fetch('https://attendx-t48b.onrender.com/api/qrcode/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

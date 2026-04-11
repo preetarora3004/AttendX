@@ -79,7 +79,7 @@ export default function TeacherDashboard() {
 
       const interval = setInterval(async () => {
          try {
-            const qrRes = await fetch("http://localhost:3000/api/qr/create", {
+            const qrRes = await fetch("https://attendx-t48b.onrender.com/api/qr/create", {
                method: "POST",
                headers: {
                   "Content-Type": "application/json",
@@ -125,7 +125,7 @@ export default function TeacherDashboard() {
       if (!token) return;
 
       try {
-         const createRes = await fetch("http://localhost:3000/api/teacher/lecture", {
+         const createRes = await fetch("https://attendx-t48b.onrender.com/api/teacher/lecture", {
             method: "POST",
             headers: {
                "Content-Type": "application/json",
@@ -140,7 +140,7 @@ export default function TeacherDashboard() {
          }
 
          const lectureResponse = createData.data;
-         const qrRes = await fetch("http://localhost:3000/api/qr/create", {
+         const qrRes = await fetch("https://attendx-t48b.onrender.com/api/qr/create", {
             method: "POST",
             headers: {
                "Content-Type": "application/json",
