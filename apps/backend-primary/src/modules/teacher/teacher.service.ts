@@ -8,6 +8,10 @@ export class TeacherService {
         return await this.repo.createTeacher(data);
     }
 
+    async getTeacherDashboard(userId: string) {
+        return await this.repo.getTeacherDashboard(userId);
+    }
+
     async getTeacherById(userId: string) {
         return await this.repo.getTeacherByUserId(userId);
     }

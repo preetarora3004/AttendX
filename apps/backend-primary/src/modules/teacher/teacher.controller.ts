@@ -9,7 +9,10 @@ export class TeacherController {
     async createTeacher(req: Request, res: Response, next: NextFunction) {
         try {
             const userId = req.user!.id;
-            const parsed = createTeacherValidator.safeParse(req.body);
+            const parsed = createTeacherValidator.safeParse({
+                ...req.body,
+                userId
+            });
 
             if (!parsed.success) {
                 throw new Error("Invalid schema")
@@ -23,6 +26,21 @@ export class TeacherController {
             })
         }
         catch (err) {
+            next(err);
+        }
+    }
+
+    async getTeacherDashboard(req: Request, res: Response, next: NextFunction) {
+        try {
+            const userId = req.user!.id;
+            const user = await service.getTeacherDashboard(userId);
+
+            return res.status(200).json({
+                success: true,
+                dashboard: user
+            })
+        }
+        catch(err) {
             next(err);
         }
     }

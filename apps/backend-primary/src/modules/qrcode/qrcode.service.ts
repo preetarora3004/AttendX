@@ -19,7 +19,7 @@ export class QrCodeService {
             errorCorrectionLevel: "M",
         }
 
-        const qrCode = await QRCode.toString(token, option);
+        const qrCode = await QRCode.toDataURL(token, option);
 
         if (!qrCode) {
             return {
@@ -31,12 +31,12 @@ export class QrCodeService {
         return qrCode;
     }
 
-    async verifyQr(token: string) {
+    verifyQr(token: string) {
 
         if (!cache.has(token)) {
-            return false;
+            return null;
         }
 
-        return true;
+        return cache.get(token);
     }
 }

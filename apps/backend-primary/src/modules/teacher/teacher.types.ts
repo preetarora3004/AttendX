@@ -3,7 +3,7 @@ export interface Teacher {
     teacherId: number
     dept: string
     qualification: string
-    officeRoom: string
+    office: string
 }
 
 export interface QrGenerationSchema {

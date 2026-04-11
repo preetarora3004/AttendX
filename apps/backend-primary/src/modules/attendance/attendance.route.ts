@@ -12,3 +12,4 @@ router.post("/absent-event/:eventId/:studentId", authMiddleware, controller.mark
 router.get("/get-attendance", authMiddleware, controller.getAttendance);
 
 export default router;
+

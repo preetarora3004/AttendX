@@ -10,13 +10,13 @@ import { errorMiddleware } from "@workspace/backend/middlewares/error.middleware
 
 const app = express();
 
-app.use(cors());
+app.use(cors())
 app.use(express.json());
 app.use("/api", userRoutes);
 app.use("/api/qr", qrRoutes);
 app.use("/api/student", studentRoutes);
 app.use("/api/teacher", teacherRoutes);
-app.use("api/attendanace", attendanceRouter);
+app.use("/api/attendanace", attendanceRouter);
 
 app.use(errorMiddleware);
 

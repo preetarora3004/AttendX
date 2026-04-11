@@ -7,16 +7,18 @@ interface CreateLectureModalProps {
   isOpen: boolean
   onClose: () => void
   onSubmit: (lectureData: any) => void
-  classes: Array<{ id: string; name: string; code: string }>
+  subjectId: string
 }
 
-export default function CreateLectureModal({ isOpen, onClose, onSubmit, classes }: CreateLectureModalProps) {
+export default function CreateLectureModal({ isOpen, onClose, onSubmit, subjectId }: CreateLectureModalProps) {
   const [formData, setFormData] = useState({
-    classId: classes.length > 0 ? classes[0].id : '',
     lectureId: '',
     date: '',
     time: '',
   })
+  const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null)
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const generateLectureId = () => {
     const timestamp = new Date().getTime()
@@ -24,16 +26,44 @@ export default function CreateLectureModal({ isOpen, onClose, onSubmit, classes 
     setFormData({ ...formData, lectureId })
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (formData.classId && formData.lectureId && formData.date && formData.time) {
-      onSubmit(formData)
-      setFormData({
-        classId: classes.length > 0 ? classes[0].id : '',
-        lectureId: '',
-        date: '',
-        time: '',
+    if (!formData.lectureId || !formData.date || !formData.time) {
+      setError('Please fill in all fields before generating the QR.')
+      return
+    }
+
+    if (!subjectId) {
+      setError('Missing subject ID.')
+      return
+    }
+
+    setError(null)
+    setIsGenerating(true)
+
+    try {
+      const res = await fetch('http://localhost:3000/api/qrcode/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          subjectId,
+          lectureId: formData.lectureId,
+        }),
       })
+
+      const data = await res.json()
+      if (!res.ok || !data.success) {
+        throw new Error(data?.message || 'Failed to generate QR code')
+      }
+
+      setQrCodeUrl(data.data)
+      onSubmit({ ...formData, subjectId, qrCode: data.data })
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unable to generate QR code.')
+    } finally {
+      setIsGenerating(false)
     }
   }
 
@@ -46,7 +76,7 @@ export default function CreateLectureModal({ isOpen, onClose, onSubmit, classes 
 
       <div className="relative bg-card border border-border rounded-2xl shadow-2xl max-w-md w-full animate-slide-up">
 
-        <div className="bg-gradient-to-r from-primary to-primary/60 p-6 flex items-center justify-between">
+        <div className="bg-linear-to-r from-primary to-primary/60 p-6 flex items-center justify-between">
           <h2 className="text-xl font-bold text-primary-foreground">Create New Lecture</h2>
           <button
             onClick={onClose}
@@ -57,21 +87,6 @@ export default function CreateLectureModal({ isOpen, onClose, onSubmit, classes 
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          
-          <div>
-            <label className="block text-sm font-semibold text-foreground mb-2">Select Class</label>
-            <select
-              value={formData.classId}
-              onChange={(e) => setFormData({ ...formData, classId: e.target.value })}
-              className="w-full px-4 py-2 rounded-lg bg-input border border-border focus:ring-2 focus:ring-primary/50 transition-all duration-300 text-foreground"
-            >
-              {classes.map((cls) => (
-                <option key={cls.id} value={cls.id}>
-                  {cls.name} ({cls.code})
-                </option>
-              ))}
-            </select>
-          </div>
 
           <div>
             <div className="flex items-center justify-between mb-2">
@@ -94,31 +109,30 @@ export default function CreateLectureModal({ isOpen, onClose, onSubmit, classes 
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-semibold text-foreground mb-2">Date</label>
-            <input
-              type="date"
-              value={formData.date}
-              onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-              className="w-full px-4 py-2 rounded-lg bg-input border border-border focus:ring-2 focus:ring-primary/50 transition-all duration-300 text-foreground"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-foreground mb-2">Time</label>
-            <input
-              type="time"
-              value={formData.time}
-              onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-              className="w-full px-4 py-2 rounded-lg bg-input border border-border focus:ring-2 focus:ring-primary/50 transition-all duration-300 text-foreground"
-            />
-          </div>
-
           <div className="bg-primary/5 border border-primary/20 rounded-lg p-3">
             <p className="text-xs text-primary font-medium">
               ✓ QR code will be automatically generated when you create the lecture
             </p>
           </div>
+
+          {error && (
+            <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive">
+              {error}
+            </div>
+          )}
+
+          {qrCodeUrl && (
+            <div className="rounded-2xl border border-border p-4 bg-muted/70">
+              <p className="text-sm font-semibold text-foreground mb-3">Generated QR Code</p>
+              <div className="flex items-center justify-center">
+                <img
+                  src={qrCodeUrl}
+                  alt="Lecture QR code"
+                  className="w-40 h-40 object-contain rounded-lg bg-white p-2"
+                />
+              </div>
+            </div>
+          )}
 
           <div className="flex gap-3 pt-4">
             <button
@@ -130,9 +144,10 @@ export default function CreateLectureModal({ isOpen, onClose, onSubmit, classes 
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors font-medium"
+              disabled={isGenerating}
+              className="flex-1 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors font-medium disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Create Lecture
+              {isGenerating ? 'Generating QR...' : 'Create Lecture'}
             </button>
           </div>
         </form>

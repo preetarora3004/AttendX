@@ -47,6 +47,27 @@ CREATE TABLE "Teacher" (
 );
 
 -- CreateTable
+CREATE TABLE "TeacherTimeTable" (
+    "id" TEXT NOT NULL,
+    "day" "Day" NOT NULL,
+    "teacherId" TEXT NOT NULL,
+
+    CONSTRAINT "TeacherTimeTable_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "TeacherPeriod" (
+    "id" TEXT NOT NULL,
+    "teacherId" TEXT NOT NULL,
+    "teacherTimeTableId" TEXT NOT NULL,
+    "subjectId" TEXT NOT NULL,
+    "time" TIMESTAMP(3) NOT NULL,
+    "venue" TEXT NOT NULL,
+
+    CONSTRAINT "TeacherPeriod_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Class" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
@@ -145,13 +166,31 @@ CREATE UNIQUE INDEX "Student_rollNum_key" ON "Student"("rollNum");
 CREATE UNIQUE INDEX "Student_userId_key" ON "Student"("userId");
 
 -- CreateIndex
+CREATE INDEX "Student_classId_idx" ON "Student"("classId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Teacher_teacherId_key" ON "Teacher"("teacherId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Teacher_userId_key" ON "Teacher"("userId");
 
 -- CreateIndex
+CREATE INDEX "Teacher_dept_idx" ON "Teacher"("dept");
+
+-- CreateIndex
+CREATE INDEX "TeacherTimeTable_teacherId_day_idx" ON "TeacherTimeTable"("teacherId", "day");
+
+-- CreateIndex
+CREATE INDEX "TeacherPeriod_teacherId_time_idx" ON "TeacherPeriod"("teacherId", "time");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "TeacherPeriod_teacherId_time_key" ON "TeacherPeriod"("teacherId", "time");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Class_name_key" ON "Class"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "EnrolledSubject_studentId_subjectId_key" ON "EnrolledSubject"("studentId", "subjectId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Subject_name_courseCode_key" ON "Subject"("name", "courseCode");
@@ -163,6 +202,9 @@ CREATE INDEX "Lecture_subjectId_idx" ON "Lecture"("subjectId");
 CREATE INDEX "Attendance_lectureId_idx" ON "Attendance"("lectureId");
 
 -- CreateIndex
+CREATE INDEX "Attendance_studentId_idx" ON "Attendance"("studentId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Attendance_studentId_lectureId_key" ON "Attendance"("studentId", "lectureId");
 
 -- CreateIndex
@@ -170,6 +212,18 @@ CREATE INDEX "EventAttendance_eventId_idx" ON "EventAttendance"("eventId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "EventAttendance_studentId_eventId_key" ON "EventAttendance"("studentId", "eventId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "WeeklyTimeTable_classId_day_key" ON "WeeklyTimeTable"("classId", "day");
+
+-- CreateIndex
+CREATE INDEX "Period_teacherId_startTime_idx" ON "Period"("teacherId", "startTime");
+
+-- CreateIndex
+CREATE INDEX "Period_weeklyTimeTableId_startTime_idx" ON "Period"("weeklyTimeTableId", "startTime");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Period_weeklyTimeTableId_startTime_key" ON "Period"("weeklyTimeTableId", "startTime");
 
 -- AddForeignKey
 ALTER TABLE "Student" ADD CONSTRAINT "Student_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -182,6 +236,18 @@ ALTER TABLE "Student" ADD CONSTRAINT "Student_eventId_fkey" FOREIGN KEY ("eventI
 
 -- AddForeignKey
 ALTER TABLE "Teacher" ADD CONSTRAINT "Teacher_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TeacherTimeTable" ADD CONSTRAINT "TeacherTimeTable_teacherId_fkey" FOREIGN KEY ("teacherId") REFERENCES "Teacher"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TeacherPeriod" ADD CONSTRAINT "TeacherPeriod_teacherId_fkey" FOREIGN KEY ("teacherId") REFERENCES "Teacher"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TeacherPeriod" ADD CONSTRAINT "TeacherPeriod_teacherTimeTableId_fkey" FOREIGN KEY ("teacherTimeTableId") REFERENCES "TeacherTimeTable"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TeacherPeriod" ADD CONSTRAINT "TeacherPeriod_subjectId_fkey" FOREIGN KEY ("subjectId") REFERENCES "Subject"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Class" ADD CONSTRAINT "Class_teacherId_fkey" FOREIGN KEY ("teacherId") REFERENCES "Teacher"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

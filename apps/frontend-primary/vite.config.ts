@@ -8,4 +8,10 @@ export default defineConfig({
     tailwindcss(),
     tsconfigPaths()
   ],
+  server: {
+    host: true,
+    allowedHosts: [
+      'unsmooth-freewill-bobtail.ngrok-free.dev'
+    ]
+  }
 })

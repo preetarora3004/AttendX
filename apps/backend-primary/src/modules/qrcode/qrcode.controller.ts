@@ -31,16 +31,18 @@ export class QrCodeController {
             if (typeof token !== "string") {
                 throw new Error("Invalid token")
             }
-            const isValid = service.verifyQr(token);
+            const qrData = service.verifyQr(token);
 
-            if (!isValid) {
+            if (!qrData) {
                 return res.status(400).json({
-                    success: isValid
+                    success: false,
+                    message: "Invalid or expired QR code"
                 })
             }
 
             return res.status(200).json({
-                success: isValid
+                success: true,
+                data: qrData
             })
         }
         catch (err) {

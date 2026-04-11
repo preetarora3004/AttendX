@@ -5,7 +5,7 @@ export const createTeacherValidator = z.object({
     teacherId: z.number(),
     dept : z.string(),
     qualification : z.string(),
-    officeRoom : z.string(),
+    office : z.string(),
 })
 
 export const validateQrGeneration = z.object({

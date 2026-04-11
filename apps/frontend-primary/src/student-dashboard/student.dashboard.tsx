@@ -75,33 +75,6 @@ export function DashBoard() {
         );
     }
 
-    const timetable = [
-        {
-            day: "Monday",
-            classes: ["Data Structures (10:00-11:30 AM)", "AI & ML (1:00-2:30 PM)"],
-        },
-        {
-            day: "Tuesday",
-            classes: [
-                "Web Development (2:00-3:30 PM)",
-                "Linear Algebra (11:00 AM-12:30 PM)",
-            ],
-        },
-        {
-            day: "Wednesday",
-            classes: ["Data Structures (10:00-11:30 AM)", "AI & ML (1:00-2:30 PM)"],
-        },
-        {
-            day: "Thursday",
-            classes: [
-                "Web Development (2:00-3:30 PM)",
-                "Linear Algebra (11:00 AM-12:30 PM)",
-            ],
-        },
-        { day: "Friday", classes: ["Data Structures (10:00-11:30 AM)"] },
-        { day: "Saturday", classes: ["Linear Algebra (11:00 AM-12:30 PM)"] },
-    ];
-
     return (
         <div className="min-h-screen bg-linear-to-br from-[#f0f5ff] via-[#f0f5ff] to-[#1c69e3]/5">
             <nav className="top-0 z-50 sticky border-b border-[#eceef5]/50 backdrop-blur-3xl bg-[#ffffff]/50">

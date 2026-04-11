@@ -57,6 +57,8 @@ model Student {
   enrolledSubjects EnrolledSubject[]
 
   createdAt DateTime @default(now())
+
+  @@index([classId])
 }
 
 model Teacher {
@@ -74,6 +76,43 @@ model Teacher {
   periods  Period[]
 
   createdAt DateTime @default(now())
+
+  teacherTimeTable TeacherTimeTable[]
+  teacherPeriod    TeacherPeriod[]
+
+  @@index([dept])
+}
+
+model TeacherTimeTable {
+  id String @id @default(cuid())
+
+  day Day
+
+  teacherId String
+  teacher   Teacher @relation(fields: [teacherId], references: [id])
+
+  teacherPeriods TeacherPeriod[]
+
+  @@index([teacherId, day])
+}
+
+model TeacherPeriod {
+  id String @id @default(cuid())
+
+  teacherId String
+  teacher   Teacher @relation(fields: [teacherId], references: [id])
+
+  teacherTimeTableId String
+  teacherTimeTable   TeacherTimeTable @relation(fields: [teacherTimeTableId], references: [id])
+
+  subjectId String
+  Subject   Subject @relation(fields: [subjectId], references: [id])
+
+  time  DateTime
+  venue String
+
+  @@unique([teacherId, time])
+  @@index([teacherId, time])
 }
 
 model Class {
@@ -98,6 +137,8 @@ model EnrolledSubject {
 
   studentId String
   student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, subjectId])
 }
 
 model Subject {
@@ -111,6 +152,7 @@ model Subject {
   lectures         Lecture[]
   periods          Period[]
   enrolledSubjects EnrolledSubject[]
+  teacherPeriods   TeacherPeriod[]
 
   @@unique([name, courseCode])
 }
@@ -141,6 +183,7 @@ model Attendance {
 
   @@unique([studentId, lectureId])
   @@index([lectureId])
+  @@index([studentId])
 }
 
 model Event {
@@ -176,6 +219,8 @@ model WeeklyTimeTable {
   class   Class  @relation(fields: [classId], references: [id], onDelete: Cascade)
 
   periods Period[]
+
+  @@unique([classId, day])
 }
 
 model Period {
@@ -191,4 +236,8 @@ model Period {
   weeklyTimeTable   WeeklyTimeTable @relation(fields: [weeklyTimeTableId], references: [id], onDelete: Cascade)
 
   startTime DateTime
+
+  @@unique([weeklyTimeTableId, startTime])
+  @@index([teacherId, startTime])
+  @@index([weeklyTimeTableId, startTime])
 }
