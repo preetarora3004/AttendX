@@ -6,8 +6,8 @@ import QRScanner from "./components/qr-code";
 import FaceRegistration from "./components/face-registration";
 import { useNavigate } from "react-router";
 
-// const BACKEND_URL = 'https://attendx-t48b.onrender.com'
-const BACKEND_URL = 'http://localhost:3000'
+const BACKEND_URL = 'https://attendx-t48b.onrender.com'
+// const BACKEND_URL = 'http://localhost:3000'
 
 interface LectureAttendance {
   id: string

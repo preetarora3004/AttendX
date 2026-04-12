@@ -7,8 +7,8 @@ import { store } from '@workspace/utils/store/zustand'
 import { useShallow } from 'zustand/shallow'
 import FaceAuth from './face-auth'
 
-// const BACKEND_URL = 'https://attendx-t48b.onrender.com'
-const BACKEND_URL = 'http://localhost:3000'
+const BACKEND_URL = 'https://attendx-t48b.onrender.com'
+// const BACKEND_URL = 'http://localhost:3000'
 
 interface QRScannerProps {
   onClose: () => void

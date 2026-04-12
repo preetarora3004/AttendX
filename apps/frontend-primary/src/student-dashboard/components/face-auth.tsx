@@ -29,8 +29,8 @@ export default function FaceAuth({ onClose, onVerified, isRegistering = false }:
     scanStateRef.current = scanState
   }, [scanState])
 
-//   const BACKEND_URL = 'https://attendx-t48b.onrender.com'
-const BACKEND_URL = 'http://localhost:3000'
+  const BACKEND_URL = 'https://attendx-t48b.onrender.com'
+// const BACKEND_URL = 'http://localhost:3000'
 
   const startScanning = () => {
     console.log('FaceAuth: Starting face scanning')
