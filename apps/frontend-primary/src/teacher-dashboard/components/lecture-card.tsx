@@ -86,7 +86,7 @@ export default function LectureCard({ lecture, delay, onDelete }: LectureCardPro
           className="w-full px-4 py-2 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors flex items-center justify-center gap-2 font-medium"
         >
           <Trash2 className="w-4 h-4" />
-          Delete Lecture
+          Close 
         </button>
       </div>
     </div>
