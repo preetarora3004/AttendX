@@ -6,7 +6,7 @@ import { authMiddleware } from "@workspace/backend/middlewares/auth.middleware";
 const router = Router();
 const controller = new QrCodeController();
 
-router.post("/create", controller.create);
+router.post("/create", authMiddleware, controller.create);
 router.get("/verify/:token", authMiddleware, controller.verify);
 
 export default router;
