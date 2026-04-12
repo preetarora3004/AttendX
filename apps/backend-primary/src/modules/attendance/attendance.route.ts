@@ -5,12 +5,14 @@ import { Router } from "express";
 const router = Router();
 const controller = new AttendanceController();
 
-router.post("/present-class/:lectureId/:studentId", controller.markPresent);
+router.post("/present-class/:lectureId/:studentId", authMiddleware, controller.markPresent);
 router.post("/absent-class/:lectureId/:studentId", authMiddleware, controller.markAbsent);
 router.post("/lecture/:lectureId/mark-absent", authMiddleware, controller.markLectureAbsent);
 router.post("/present-event/:eventId/:studentId", authMiddleware, controller.markEventPresent);
 router.post("/absent-event/:eventId/:studentId", authMiddleware, controller.markEventAbsent);
+router.post("/face/register", authMiddleware, controller.registerFace);
+router.post("/face/verify", authMiddleware, controller.verifyFace);
+router.get("/face/status", authMiddleware, controller.checkFaceStatus);
 router.get("/get-attendance/:subjectId", authMiddleware, controller.getAttendance);
 
 export default router;
-

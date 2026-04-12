@@ -83,12 +83,6 @@ export class AttendanceRepository {
         return await client.eventAttendance.create({data})
     }
 
-    /**
-     * 
-     * @param {subjectId}
-     * @returns {Array}
-     */
-
     async getAttendance(subjectId: string) {
         return await client.lecture.findMany({
             where: {
