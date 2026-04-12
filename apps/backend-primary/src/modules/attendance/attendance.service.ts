@@ -12,6 +12,10 @@ export class AttendanceService {
         return await this.repo.markAbsent(data);
     }
 
+    async markAbsentForLecture(lectureId: string) {
+        return await this.repo.markAbsentForLecture(lectureId);
+    }
+
     async markPresentEvent(data: EventAttendance) {
         return await this.repo.markEventPresent(data);
     }

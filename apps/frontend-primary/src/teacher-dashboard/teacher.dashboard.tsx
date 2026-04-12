@@ -12,6 +12,8 @@ import {
    Plus,
    Loader,
 } from "lucide-react";
+
+const BACKEND_URL = 'https://attendx-t48b.onrender.com'
 import LectureCard from "./components/lecture-card";
 import SubjectCard from "./components/subject.card";
 import ClassCard from "./components/class.card";
@@ -111,13 +113,33 @@ export default function TeacherDashboard() {
       intervalMapRef.current.set(lectureId, interval);
    };
 
-   const handleDeleteLecture = (lectureId: string) => {
+   const handleDeleteLecture = async (lectureId: string) => {
+      const token = localStorage.getItem("token")
+      if (!token) return;
+
+      try {
+         const res = await fetch(`${BACKEND_URL}/api/attendance/lecture/${lectureId}/mark-absent`, {
+            method: "POST",
+            headers: {
+               Authorization: `Bearer ${token}`,
+               "Content-Type": "application/json",
+            },
+         })
+
+         const data = await res.json()
+         if (!res.ok || !data.success) {
+            throw new Error(data?.message || data?.error || "Failed to mark absent students")
+         }
+      } catch (error) {
+         console.error("Failed to mark lecture absent before delete:", error)
+         return
+      }
 
       if (intervalMapRef.current.has(lectureId)) {
-         clearInterval(intervalMapRef.current.get(lectureId)!);
-         intervalMapRef.current.delete(lectureId);
+         clearInterval(intervalMapRef.current.get(lectureId)!)
+         intervalMapRef.current.delete(lectureId)
       }
-      setLectures((prev) => prev.filter((item) => item.id !== lectureId));
+      setLectures((prev) => prev.filter((item) => item.id !== lectureId))
    };
 
    const handleCreateLecture = async (subjectId: string) => {

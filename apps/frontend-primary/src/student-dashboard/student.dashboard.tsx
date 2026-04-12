@@ -1,9 +1,29 @@
-import { LogOut, BookOpen, Clock, Calendar, Loader, QrCode } from "lucide-react";
+import { LogOut, BookOpen, Loader, QrCode } from "lucide-react";
 import { useEffect, useState } from "react";
 import { store } from "@workspace/utils/store/zustand";
 import { useShallow } from "zustand/shallow";
 import QRScanner from "./components/qr-code";
 import { useNavigate } from "react-router";
+
+// const BACKEND_URL = 'https://attendx-t48b.onrender.com'
+const BACKEND_URL = 'http://localhost:3000'
+
+interface LectureAttendance {
+  id: string
+  date: string
+  attendance: Array<{
+    studentId: string
+    status: string
+  }>
+}
+
+interface AttendanceStats {
+  total: number
+  present: number
+  absent: number
+  unmarked: number
+  percentage: number
+}
 
 export function DashBoard() {
 
@@ -22,6 +42,18 @@ export function DashBoard() {
         );
     const [isLoading, setLoading] = useState(true);
     const [isAuthenticated, setAuthenticate] = useState(false);
+    const [attendanceSubjectId, setAttendanceSubjectId] = useState<string | null>(null)
+    const [attendanceLectures, setAttendanceLectures] = useState<LectureAttendance[]>([])
+    const [attendanceLoading, setAttendanceLoading] = useState(false)
+    const [attendanceError, setAttendanceError] = useState<string | null>(null)
+    const [attendanceStats, setAttendanceStats] = useState<AttendanceStats>({
+        total: 0,
+        present: 0,
+        absent: 0,
+        unmarked: 0,
+        percentage: 0,
+    })
+
     const handleSignOut = () => {
 
         localStorage.removeItem("token")
@@ -58,6 +90,87 @@ export function DashBoard() {
 
         init(token);
     }, []);
+
+    useEffect(() => {
+        if (enrollSubject && enrollSubject.length > 0) {
+            const firstSubjectId = enrollSubject[0].subject.id;
+            setAttendanceSubjectId(firstSubjectId);
+        }
+    }, [enrollSubject]);
+
+    useEffect(() => {
+        if (!attendanceSubjectId) return;
+        fetchAttendanceForSubject(attendanceSubjectId);
+    }, [attendanceSubjectId]);
+
+    const computeAttendanceStats = (lectures: LectureAttendance[]) => {
+        const records = lectures.map((lecture) => {
+            const matched = lecture.attendance?.find(
+                (item) => item.studentId === student?.id,
+            )
+            return {
+                status: matched?.status ?? 'NOT_MARKED',
+            }
+        })
+
+        const present = records.filter((item) => item.status === 'PRESENT').length
+        const absent = records.filter((item) => item.status === 'ABSENT').length
+        const unmarked = records.filter((item) => item.status === 'NOT_MARKED').length
+        const total = lectures.length
+        const percentage = total > 0 ? Math.round((present / total) * 100) : 0
+
+        setAttendanceStats({
+            total,
+            present,
+            absent,
+            unmarked,
+            percentage,
+        })
+    }
+
+    const fetchAttendanceForSubject = async (subjectId: string) => {
+        setAttendanceLoading(true)
+        setAttendanceError(null)
+
+        const token = localStorage.getItem('token')
+        if (!token) {
+            setAttendanceError('Authentication required. Please sign in again.')
+            setAttendanceLoading(false)
+            return
+        }
+
+        try {
+            const res = await fetch(
+                `${BACKEND_URL}/api/attendance/get-attendance/${subjectId}`,
+                {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                },
+            )
+
+            const data = await res.json()
+            if (!res.ok || !data.success) {
+                throw new Error(data?.message || data?.error || 'Unable to load attendance data.')
+            }
+
+            const lectures = data.data as LectureAttendance[]
+            setAttendanceLectures(lectures)
+            computeAttendanceStats(lectures)
+        } catch (error) {
+            setAttendanceLectures([])
+            setAttendanceStats({ total: 0, present: 0, absent: 0, unmarked: 0, percentage: 0 })
+            setAttendanceError(
+                error instanceof Error
+                    ? error.message
+                    : 'Unable to load attendance data.',
+            )
+        } finally {
+            setAttendanceLoading(false)
+        }
+    }
 
     if (isLoading) {
         return (
@@ -157,7 +270,7 @@ export function DashBoard() {
                         <div>
                             <h3 className="text-2xl font-medium">Enrolled Classes</h3>
                             <p className="text-sm text-gray-500 mt-1">
-                                You are enrolled in 4 courses
+                                You are enrolled in {enrollSubject?.length ?? 0} courses
                             </p>
                         </div>
 
@@ -167,24 +280,113 @@ export function DashBoard() {
                     </div>
 
 
-                    <div className="grid md:grid-cols-2 gap-4 mb-5">
-                        {enrollSubject && enrollSubject.length > 0 ? enrollSubject.map((clx, idx) => (
-                            <div
-                                key={clx.subject.id}
-                                className={`bg-linear-to-br from-[#3c7feb] to-[#5ea0f1] rounded-2xl p-6 text-white shadow-lg hover:shadow-xl hover:scale-103 transition-all duration-300 cursor-pointer group
-                                animate-slide-up-delay-${idx + 3}`}
-                                style={{ animationDelay: `${(idx + 2) * 100}ms` }}
-                            >
-                                <div className="flex items-start justify-between mb-4">
-                                    <div>
-                                        <h2 className="text-lg font-semibold">{clx.subject.name}</h2>
-                                        <p className="text-sm font-extralight">{clx.subject.courseCode}</p>
-                                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+                        {enrollSubject && enrollSubject.length > 0 ? enrollSubject.map((clx, idx) => {
+                            const isActive = attendanceSubjectId === clx.subject.id
+                            return (
+                                <div
+                                    key={clx.subject.id}
+                                    onClick={() => setAttendanceSubjectId(clx.subject.id)}
+                                    className={`rounded-2xl p-6 text-white shadow-lg transition-all duration-300 cursor-pointer group animate-slide-up-delay-${idx + 3} ${isActive ? 'bg-[#1f4fdb] shadow-blue-300' : 'bg-linear-to-br from-[#3c7feb] to-[#5ea0f1] hover:shadow-xl hover:scale-103'}`}
+                                    style={{ animationDelay: `${(idx + 2) * 100}ms` }}
+                                >
+                                    <div className="flex items-start justify-between mb-4">
+                                        <div>
+                                            <h2 className="text-lg font-semibold">{clx.subject.name}</h2>
+                                            <p className="text-sm font-extralight">{clx.subject.courseCode}</p>
+                                        </div>
 
-                                    <BookOpen className="w-6 h-6 text-white/60" />
+                                        <BookOpen className="w-6 h-6 text-white/60" />
+                                    </div>
+                                </div>
+                            )
+                        }) : null}
+                    </div>
+
+                    <div className="w-full flex items-center mb-6">
+                        <div>
+                            <h3 className="text-2xl font-medium">Subject Attendance</h3>
+                            <p className="text-sm text-gray-500 mt-1">
+                                View your attendance record for the selected subject.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-[minmax(0,280px)_1fr] mb-8 items-start">
+                        <div className="bg-white border border-[#eceef5] rounded-3xl p-6 shadow-sm w-full">
+                            <label className="text-sm font-medium text-gray-600">Selected subject</label>
+                            <select
+                                value={attendanceSubjectId ?? ''}
+                                onChange={(e) => setAttendanceSubjectId(e.target.value)}
+                                className="w-full mt-3 rounded-2xl border border-[#d9e2ff] bg-[#f8fbff] px-4 py-3 text-sm text-gray-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                            >
+                                {enrollSubject?.map((subject) => (
+                                    <option key={subject.subject.id} value={subject.subject.id}>
+                                        {subject.subject.name}
+                                    </option>
+                                ))}
+                            </select>
+
+                            <div className="mt-6 space-y-4">
+                                <div className="rounded-3xl bg-[#f2f7ff] p-4">
+                                    <p className="text-xs text-gray-500">Total lectures</p>
+                                    <p className="mt-2 text-3xl font-semibold text-[#1f3bb3]">{attendanceStats.total}</p>
+                                </div>
+                                <div className="rounded-3xl bg-[#ecfdf5] p-4">
+                                    <p className="text-xs text-gray-500">Present</p>
+                                    <p className="mt-2 text-3xl font-semibold text-[#0f7a4f]">{attendanceStats.present}</p>
+                                </div>
+                                <div className="rounded-3xl bg-[#fff1f3] p-4">
+                                    <p className="text-xs text-gray-500">Absent</p>
+                                    <p className="mt-2 text-3xl font-semibold text-[#b32d3f]">{attendanceStats.absent}</p>
+                                </div>
+                                <div className="rounded-3xl bg-[#fff7ed] p-4">
+                                    <p className="text-xs text-gray-500">Attendance%</p>
+                                    <p className="mt-2 text-3xl font-semibold text-[#c46d08]">{attendanceStats.percentage}%</p>
                                 </div>
                             </div>
-                        )) : null}
+                        </div>
+
+                        <div className="bg-white border border-[#eceef5] rounded-3xl p-6 shadow-sm w-full">
+                            <h4 className="text-lg font-semibold mb-4">Lecture history</h4>
+                            {attendanceLoading ? (
+                                <div className="flex items-center justify-center py-14">
+                                    <Loader className="w-8 h-8 text-primary" />
+                                </div>
+                            ) : attendanceError ? (
+                                <p className="text-sm text-red-600">{attendanceError}</p>
+                            ) : attendanceLectures.length === 0 ? (
+                                <p className="text-sm text-gray-500">No lecture attendance data available for this subject.</p>
+                            ) : (
+                                <div className="space-y-3 max-h-9 overflow-y-auto pr-2 sm:max-h-119">
+                                    {attendanceLectures.slice(0, ).map((lecture, idx) => {
+                                        const studentRecord = lecture.attendance?.find(
+                                            (item) => item.studentId === student?.id,
+                                        )
+                                        const status = studentRecord?.status ?? 'NOT_MARKED'
+                                        const badgeClass = status === 'PRESENT'
+                                            ? 'bg-emerald-100 text-emerald-700'
+                                            : status === 'ABSENT'
+                                                ? 'bg-rose-100 text-rose-700'
+                                                : 'bg-slate-100 text-slate-700'
+
+                                        return (
+                                            <div key={lecture.id} className="rounded-3xl border border-[#eff3ff] p-4 flex items-center justify-between gap-3">
+                                                <div>
+                                                    <p className="text-sm font-medium text-[#111827]">Lecture {idx + 1}</p>
+                                                    <p className="text-xs text-gray-500 mt-1">
+                                                        {new Date(lecture.date).toLocaleDateString()} • {new Date(lecture.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                    </p>
+                                                </div>
+                                                <span className={`rounded-full px-3 py-1 text-xs font-semibold ${badgeClass}`}>
+                                                    {status === 'NOT_MARKED' ? 'Not marked' : status}
+                                                </span>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     <div className="w-full flex items-center">
@@ -198,7 +400,7 @@ export function DashBoard() {
 
                     <div className="bg-[#ffffff] border border-[#eceef5] rounded-2xl overflow-hidden hover:shadow-lg hover:shadow-primary/10 transition-all duration-500">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-0 divide-y md:divide-y-0 md:divide-x divide-[#f0f5ff]">
-                            {timeTable!.map((daySchedule, idx) => (
+                            {timeTable!.map((daySchedule) => (
                                 <div key={daySchedule.day} className="p-6">
                                     <h4 className="font-bold text-[#132139] mb-4 text-lg">
                                         {daySchedule.day}

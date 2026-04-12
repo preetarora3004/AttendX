@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Calendar, Clock, Users, Eye, EyeOff, Trash2 } from 'lucide-react'
+import { Calendar, Clock, Eye, EyeOff, Trash2 } from 'lucide-react'
 import { formatDate } from '@workspace/ui/lib/date-utils'
 
 interface LectureCardProps {

@@ -54,6 +54,33 @@ export class AttendanceController {
         }
     }
 
+    async markLectureAbsent(req: Request, res: Response, next: NextFunction) {
+        try {
+            const lectureId = Array.isArray(req.params.lectureId) ? req.params.lectureId[0] : req.params.lectureId;
+
+            if (!lectureId) {
+                throw new Error("Invalid lecture ID")
+            }
+
+            const result = await service.markAbsentForLecture(lectureId);
+
+            if (!result) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Lecture not found"
+                })
+            }
+
+            return res.status(200).json({
+                success: true,
+                data: result
+            })
+        }
+        catch (err) {
+            next(err);
+        }
+    }
+
     async markEventPresent(req: Request, res: Response, next: NextFunction) {
         try {
             const payload = {
@@ -104,24 +131,17 @@ export class AttendanceController {
 
     async getAttendance(req: Request, res: Response, next: NextFunction) {
         try {
-            const { subjectId } = req.body;
+            const subjectId = Array.isArray(req.params.subjectId) ? req.params.subjectId[0] : req.params.subjectId;
 
             if (!subjectId) {
-                throw new Error("Invalid Schema");
+                throw new Error("Invalid subject ID");
             }
 
-            const totalClass = await service.getAttendance(subjectId);
-
-            if(!totalClass|| totalClass.attendance.length < 1) {
-                return res.status(400).json({
-                    success: false,
-                    error: "Not exists"
-                })
-            }
+            const lectures = await service.getAttendance(subjectId);
 
             return res.status(200).json({
                 success: true,
-                data: totalClass
+                data: lectures || []
             })
         }
         catch(err) {
