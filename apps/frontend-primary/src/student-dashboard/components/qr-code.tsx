@@ -268,6 +268,7 @@ export default function QRScanner({ onClose }: QRScannerProps) {
   const handleCloseFaceAuth = () => {
     setShowFaceAuth(false) 
   }
+
   return (
     <>
       {showFaceAuth && (
