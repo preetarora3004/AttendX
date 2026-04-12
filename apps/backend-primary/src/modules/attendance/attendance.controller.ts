@@ -148,4 +148,68 @@ export class AttendanceController {
             next(err);
         }
     }
+
+    async registerFace(req: Request, res: Response, next: NextFunction) {
+        try {
+            const studentId = req.user?.id;
+            const { faceEmbedding } = req.body;
+
+            if (!studentId || !faceEmbedding || !Array.isArray(faceEmbedding)) {
+                throw new Error("Invalid student ID or face embedding");
+            }
+
+            const result = await service.registerFaceDescriptor(studentId, faceEmbedding);
+
+            return res.status(200).json({
+                success: true,
+                message: "Face registered successfully",
+                data: result
+            })
+        }
+        catch (err) {
+            next(err);
+        }
+    }
+
+    async verifyFace(req: Request, res: Response, next: NextFunction) {
+        try {
+            const studentId = req.user?.id;
+            const { faceEmbedding } = req.body;
+
+            if (!studentId || !faceEmbedding || !Array.isArray(faceEmbedding)) {
+                throw new Error("Invalid student ID or face embedding");
+            }
+
+            const isVerified = await service.verifyFaceDescriptor(studentId, faceEmbedding);
+
+            return res.status(200).json({
+                success: true,
+                verified: isVerified,
+                message: isVerified ? "Face verified successfully" : "Face verification failed"
+            })
+        }
+        catch (err) {
+            next(err);
+        }
+    }
+
+    async checkFaceStatus(req: Request, res: Response, next: NextFunction) {
+        try {
+            const studentId = req.user?.id;
+
+            if (!studentId) {
+                throw new Error("Invalid student ID");
+            }
+
+            const isRegistered = await service.checkFaceRegistration(studentId);
+
+            return res.status(200).json({
+                success: true,
+                isRegistered: isRegistered
+            })
+        }
+        catch (err) {
+            next(err);
+        }
+    }
 }

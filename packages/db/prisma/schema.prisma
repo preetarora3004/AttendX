@@ -52,6 +52,8 @@ model Student {
   eventId String?
   event   Event?  @relation(fields: [eventId], references: [id], onDelete: SetNull)
 
+  faceEmbedding Json? 
+
   attendance       Attendance[]
   eventAttendance  EventAttendance[]
   enrolledSubjects EnrolledSubject[]
