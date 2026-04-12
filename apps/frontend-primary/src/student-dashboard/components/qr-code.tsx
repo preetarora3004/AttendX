@@ -268,3 +268,137 @@ export default function QRScanner({ onClose }: QRScannerProps) {
   const handleCloseFaceAuth = () => {
     setShowFaceAuth(false) 
   }
+  return (
+    <>
+      {showFaceAuth && (
+        <FaceAuth 
+          onClose={handleCloseFaceAuth}
+          onVerified={handleFaceVerified}
+          isRegistering={false}
+        />
+      )}
+
+      {!showFaceAuth && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-card rounded-3xl shadow-2xl w-full max-w-md border border-border overflow-hidden animate-slide-up">
+            <div className="bg-linear-to-r from-primary to-primary/70 px-6 py-6 text-white flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-bold">Mark Attendance</h2>
+                <p className="text-white/80 text-sm">Scan class QR code</p>
+              </div>
+              <button
+                onClick={onClose}
+                className="p-2 hover:bg-white/20 rounded-lg transition-colors duration-300"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-6">
+              {error && (
+                <div className="mb-4 p-3 bg-red-100 border border-red-300 rounded-lg flex gap-2">
+                  <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+                  <p className="text-sm text-red-800">{error}</p>
+                </div>
+              )}
+
+              {!scannedResult ? (
+                <div className="space-y-4">
+                  {isVerifying && (
+                    <div className="flex items-center justify-center py-8">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                      <span className="ml-3 text-foreground">Verifying QR code...</span>
+                    </div>
+                  )}
+
+                  {!isVerifying && (
+                    <>
+                      <div className="relative bg-black rounded-2xl overflow-hidden aspect-square">
+                        <video
+                          ref={videoRef}
+                          autoPlay
+                          playsInline
+                          className="w-full h-full object-cover"
+                        />
+                        <canvas
+                          ref={canvasRef}
+                          className="hidden"
+                        />
+                        <div className="absolute inset-0 border-2 border-dashed border-primary/50 rounded-lg m-12" />
+                        <div className="absolute top-0 left-0 right-0 h-12 bg-linear-to-b from-primary/30 to-transparent" />
+                        <div className="absolute bottom-0 left-0 right-0 h-12 bg-linear-to-t from-primary/30 to-transparent" />
+                      </div>
+
+                      <div className="relative">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileUpload}
+                          className="hidden"
+                          id="qr-upload"
+                        />
+                        <label
+                          htmlFor="qr-upload"
+                          className="flex items-center justify-center gap-2 w-full border-2 border-dashed border-border rounded-xl p-3 cursor-pointer hover:border-primary/50 hover:bg-muted transition-all duration-300"
+                        >
+                          <Upload className="w-4 h-4 text-muted-foreground" />
+                          <span className="text-sm text-muted-foreground">Or upload QR image</span>
+                        </label>
+                      </div>
+
+                      <p className="text-xs text-muted-foreground text-center">
+                        Position the QR code within the frame to scan
+                      </p>
+                    </>
+                  )}
+                </div>
+              ) : (
+                <div className="space-y-4 text-center py-4">
+                  {isMarking ? (
+                    <>
+                      <div className="flex items-center justify-center py-8">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                      </div>
+                      <p className="text-foreground">Marking attendance...</p>
+                    </>
+                  ) : (
+                    <>
+                      <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+                        <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-foreground mb-1">Attendance Marked!</h3>
+                        <p className="text-muted-foreground text-sm mb-4">
+                          Class successfully marked as present
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          Time: {new Date().toLocaleTimeString()}
+                        </p>
+                      </div>
+
+                      <button
+                        onClick={handleSuccess}
+                        className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 rounded-xl transition-all duration-300"
+                      >
+                        Scan Another Class
+                      </button>
+
+                      <button
+                        onClick={onClose}
+                        className="w-full border border-border text-foreground font-bold py-3 rounded-xl hover:bg-muted transition-all duration-300"
+                      >
+                        Done
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
