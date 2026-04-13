@@ -7,6 +7,6 @@ export default defineConfig({
    plugins: [react(), tailwindcss(), tsconfigPaths()],
    server: {
       host: true,
-      allowedHosts: ["https://attendx-xdzf.onrender.com"],
+      allowedHosts: ["attendx-xdzf.onrender.com"],
    },
 });
