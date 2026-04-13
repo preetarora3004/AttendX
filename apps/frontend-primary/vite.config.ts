@@ -7,6 +7,6 @@ export default defineConfig({
    plugins: [react(), tailwindcss(), tsconfigPaths()],
    server: {
       host: true,
-      allowedHosts: ["unsmooth-freewill-bobtail.ngrok-free.dev"],
+      allowedHosts: ["https://attendx-xdzf.onrender.com"],
    },
 });
