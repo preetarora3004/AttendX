@@ -18,7 +18,7 @@ export async function authorizeRole(
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
 
-        if (decoded.role !== "teacher") {
+        if (decoded.role !== "TEACHER") {
             return res.status(401).json({
                 success: false,
                 error: "Unauthorized access"
