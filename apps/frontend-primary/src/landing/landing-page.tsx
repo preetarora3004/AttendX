@@ -16,3 +16,28 @@ export default function LandingPage() {
         
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(91,127,214,0.05)_1px,transparent_1px),linear-gradient(0deg,rgba(91,127,214,0.05)_1px,transparent_1px)] bg-[size:4rem_4rem] animate-pulse opacity-50" />
       </div>
+
+      <div className="relative z-10">
+    
+        <nav className="fixed top-0 w-full backdrop-blur-md bg-background/80 border-b border-border z-50">
+          <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
+                <BookOpen className="w-6 h-6 text-primary-foreground" />
+              </div>
+              <span className="font-bold text-xl text-foreground">AttendX</span>
+            </div>
+            
+            <div className="hidden md:flex items-center gap-8">
+              <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">Features</a>
+              <a href="#how-it-works" className="text-muted-foreground hover:text-foreground transition-colors">How it Works</a>
+            </div>
+
+            <div className="flex items-center gap-4">
+              {/* <Link href="/page" className="text-muted-foreground hover:text-foreground transition-colors">Sign In</Link>
+              <Link href="/page" className="px-6 py-2 rounded-xl bg-primary text-primary-foreground font-medium hover:shadow-lg hover:shadow-primary/30 transition-all duration-300 hover:scale-105">
+                Get Started
+              </Link> */}
+            </div>
+          </div>
+        </nav>
