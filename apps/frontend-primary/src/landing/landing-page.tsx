@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { ChevronRight, BookOpen, Users, Zap, Award, ArrowRight } from 'lucide-react'
+import { Link } from 'react-router'
 
 export default function LandingPage() {
   const [hoveredCard, setHoveredCard] = useState<string | null>(null)
@@ -34,10 +35,10 @@ export default function LandingPage() {
             </div>
 
             <div className="flex items-center gap-4">
-              {/* <Link href="/page" className="text-muted-foreground hover:text-foreground transition-colors">Sign In</Link>
-              <Link href="/page" className="px-6 py-2 rounded-xl bg-primary text-primary-foreground font-medium hover:shadow-lg hover:shadow-primary/30 transition-all duration-300 hover:scale-105">
+              <Link to="/auth" className="text-muted-foreground hover:text-foreground transition-colors">Sign In</Link>
+              <Link to="/auth" className="px-6 py-2 rounded-xl bg-primary text-primary-foreground font-medium hover:shadow-lg hover:shadow-primary/30 transition-all duration-300 hover:scale-105">
                 Get Started
-              </Link> */}
+              </Link>
             </div>
           </div>
         </nav>
@@ -57,9 +58,9 @@ export default function LandingPage() {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up-delay-3">
-              {/* <Link href="/page" className="px-8 py-4 rounded-xl bg-primary text-primary-foreground font-semibold hover:shadow-xl hover:shadow-primary/40 transition-all duration-300 hover:scale-105 flex items-center gap-2">
+              <Link to="/auth" className="px-8 py-4 rounded-xl bg-primary text-primary-foreground font-semibold hover:shadow-xl hover:shadow-primary/40 transition-all duration-300 hover:scale-105 flex items-center gap-2">
                 Start Learning Free <ArrowRight className="w-5 h-5" />
-              </Link> */}
+              </Link>
               <button className="px-8 py-4 rounded-xl border-2 border-border text-foreground font-semibold hover:bg-muted transition-all duration-300">
                 Watch Demo
               </button>
@@ -105,9 +106,9 @@ export default function LandingPage() {
                     <span className="text-muted-foreground">Access timetable in real-time</span>
                   </li>
                 </ul>
-                {/* <Link href="/page" className="inline-flex items-center gap-2 text-primary hover:gap-3 transition-all duration-300 font-semibold">
+                <Link to="/auth" className="inline-flex items-center gap-2 text-primary hover:gap-3 transition-all duration-300 font-semibold">
                   Explore Student Dashboard <ChevronRight className="w-4 h-4" />
-                </Link> */}
+                </Link>
               </div>
 
               <div 
@@ -137,9 +138,9 @@ export default function LandingPage() {
                     <span className="text-muted-foreground">Track attendance analytics</span>
                   </li>
                 </ul>
-                {/* <Link href="/teacher/page" className="inline-flex items-center gap-2 text-secondary hover:gap-3 transition-all duration-300 font-semibold">
+                <Link to="/auth" className="inline-flex items-center gap-2 text-secondary hover:gap-3 transition-all duration-300 font-semibold">
                   Explore Teacher Dashboard <ChevronRight className="w-4 h-4" />
-                </Link> */}
+                </Link>
               </div>
             </div>
           </div>
@@ -184,7 +185,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="border-t border-border pt-8 text-center text-sm text-muted-foreground">
-            <p>&copy; 2024 AttendX. All rights reserved.</p>
+            <p>&copy; 2026 AttendX. All rights reserved.</p>
           </div>
         </footer>
       </div>
